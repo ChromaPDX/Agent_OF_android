@@ -1,0 +1,4 @@
+ofxAndroid
+ofxAccelerometer
+ofxOsc
+ofxNetwork
