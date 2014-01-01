@@ -43,9 +43,7 @@ void testApp::setup(){
 
 	ofLogNotice("SETUP") << "Setup finished";
 
-	agent.font.loadFont("verdana.ttf", 14, true, true);
-	agent.font.setLineHeight(18.0f);
-	agent.font.setLetterSpacing(1.037);
+
 
 	agent.setup();
 	//sender.setup("192.168.1.255", 1234);
@@ -69,6 +67,16 @@ void testApp::update(){
 
 }
 
+void testApp::vibrate(bool on){
+
+	if (on){
+		vibrator.vibrate(250);
+	}
+	else {
+		vibrator.stop();
+	}
+
+}
 //--------------------------------------------------------------
 void testApp::draw(){
 
@@ -123,17 +131,19 @@ void testApp::swipe(ofxAndroidSwipeDir swipeDir, int id){
 
 //--------------------------------------------------------------
 void testApp::pause(){
-
+	agent.pause();
 }
 
 //--------------------------------------------------------------
 void testApp::stop(){
 
+
+
 }
 
 //--------------------------------------------------------------
 void testApp::resume(){
-
+	agent.resume();
 }
 
 //--------------------------------------------------------------

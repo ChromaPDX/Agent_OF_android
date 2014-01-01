@@ -3,7 +3,10 @@
 #include "ofMain.h"
 
 #include "ofxAndroid.h"
+#include "ofxAndroidVibrator.h"
+
 #include "ofxAccelerometer.h"
+
 
 
 
@@ -56,9 +59,10 @@ class testApp : public ofxAndroidApp{
 
 		agentController agent;
 
+		void vibrate(bool on);
 
 
-
+		ofxAndroidVibrator vibrator;
 
 
 		void oscUpdate();

@@ -197,7 +197,18 @@ obj/android/neon/Release/src/agentController.o: src/agentController.cpp \
  ../../../addons/ofxOsc/libs/oscpack/src/osc/../ip/PacketListener.h \
  ../../../addons/ofxOsc/libs/oscpack/src/ip/UdpSocket.h \
  ../../../addons/ofxOsc/libs/oscpack/src/ip/NetworkingUtils.h \
- ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h
+ ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h \
+ ../../../addons/ofxNetwork/src/ofxNetwork.h \
+ ../../../addons/ofxNetwork/src/ofxTCPClient.h \
+ ../../../addons/ofxNetwork/src/ofxTCPManager.h \
+ ../../../addons/ofxNetwork/src/ofxTCPServer.h \
+ ../../../addons/ofxNetwork/src/ofxUDPManager.h src/testApp.h \
+ ../../../addons/ofxAndroid/src/ofxAndroid.h \
+ ../../../addons/ofxAndroid/src/ofAppAndroidWindow.h \
+ ../../../addons/ofxAndroid/src/ofxAndroidApp.h \
+ ../../../addons/ofxAndroid/src/ofxAndroidUtils.h \
+ ../../../addons/ofxAndroid/src/ofxAndroidVibrator.h \
+ ../../../addons/ofxAccelerometer/src/ofxAccelerometer.h src/ofxTimer.h
 
 src/agentController.h:
 
@@ -598,3 +609,29 @@ src/agentController.h:
 ../../../addons/ofxOsc/libs/oscpack/src/ip/NetworkingUtils.h:
 
 ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h:
+
+../../../addons/ofxNetwork/src/ofxNetwork.h:
+
+../../../addons/ofxNetwork/src/ofxTCPClient.h:
+
+../../../addons/ofxNetwork/src/ofxTCPManager.h:
+
+../../../addons/ofxNetwork/src/ofxTCPServer.h:
+
+../../../addons/ofxNetwork/src/ofxUDPManager.h:
+
+src/testApp.h:
+
+../../../addons/ofxAndroid/src/ofxAndroid.h:
+
+../../../addons/ofxAndroid/src/ofAppAndroidWindow.h:
+
+../../../addons/ofxAndroid/src/ofxAndroidApp.h:
+
+../../../addons/ofxAndroid/src/ofxAndroidUtils.h:
+
+../../../addons/ofxAndroid/src/ofxAndroidVibrator.h:
+
+../../../addons/ofxAccelerometer/src/ofxAccelerometer.h:
+
+src/ofxTimer.h:

@@ -185,6 +185,7 @@ obj/android/armv7/Release/src/testApp.o: src/testApp.cpp src/testApp.h \
  ../../../addons/ofxAndroid/src/ofAppAndroidWindow.h \
  ../../../addons/ofxAndroid/src/ofxAndroidApp.h \
  ../../../addons/ofxAndroid/src/ofxAndroidUtils.h \
+ ../../../addons/ofxAndroid/src/ofxAndroidVibrator.h \
  ../../../addons/ofxAccelerometer/src/ofxAccelerometer.h \
  src/agentController.h ../../../addons/ofxOsc/src/ofxOsc.h \
  ../../../addons/ofxOsc/src/ofxOscArg.h \
@@ -202,7 +203,12 @@ obj/android/armv7/Release/src/testApp.o: src/testApp.cpp src/testApp.h \
  ../../../addons/ofxOsc/libs/oscpack/src/osc/../ip/PacketListener.h \
  ../../../addons/ofxOsc/libs/oscpack/src/ip/UdpSocket.h \
  ../../../addons/ofxOsc/libs/oscpack/src/ip/NetworkingUtils.h \
- ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h
+ ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h \
+ ../../../addons/ofxNetwork/src/ofxNetwork.h \
+ ../../../addons/ofxNetwork/src/ofxTCPClient.h \
+ ../../../addons/ofxNetwork/src/ofxTCPManager.h \
+ ../../../addons/ofxNetwork/src/ofxTCPServer.h \
+ ../../../addons/ofxNetwork/src/ofxUDPManager.h
 
 src/testApp.h:
 
@@ -578,6 +584,8 @@ src/testApp.h:
 
 ../../../addons/ofxAndroid/src/ofxAndroidUtils.h:
 
+../../../addons/ofxAndroid/src/ofxAndroidVibrator.h:
+
 ../../../addons/ofxAccelerometer/src/ofxAccelerometer.h:
 
 src/agentController.h:
@@ -615,3 +623,13 @@ src/agentController.h:
 ../../../addons/ofxOsc/libs/oscpack/src/ip/NetworkingUtils.h:
 
 ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h:
+
+../../../addons/ofxNetwork/src/ofxNetwork.h:
+
+../../../addons/ofxNetwork/src/ofxTCPClient.h:
+
+../../../addons/ofxNetwork/src/ofxTCPManager.h:
+
+../../../addons/ofxNetwork/src/ofxTCPServer.h:
+
+../../../addons/ofxNetwork/src/ofxUDPManager.h:
