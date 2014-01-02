@@ -141,15 +141,17 @@ void agentController::updateTCP() {
 
                 	strcpy( mouseButtonState, str.c_str() );
 
-                    ofLogNotice("TCP") << "Received From Client" + ofToString(i) + " : " + str;
 
+                    ofLogNotice("TCP") << "Agent:" + ofToString(i) + " : " + str;
 
                     if (strcmp(mouseButtonState, "pickedAgent") == 0) {
                         pickedAgent();
                     }
 
+                    else  if (strcmp(mouseButtonState, "login") == 0) {
+                        activeAgents++;
 
-
+                    }
                 }
             }
 	    }
@@ -168,6 +170,7 @@ void agentController::updateTCP() {
 
             if (strcmp(mouseButtonState, "startGame") == 0) {
                 startGame();
+                sendMessage("login");
             }
 
             else if (strcmp(mouseButtonState, "execute") == 0) {
@@ -182,19 +185,25 @@ void agentController::updateTCP() {
                 mainMessage = "PICK";
             }
 
-            for (int g = 0; g < NUM_GESTURES; g++) {
-                if (strcmp(mouseButtonState, actionString[g].c_str()) == 0) {
-                    mainMessage = str;
-                }
+            else {
+                mainMessage = str;
 
             }
 
-            for (int g = 0; g < NUM_PLACES; g++) {
-                if (strcmp(mouseButtonState, placeString[g].c_str()) == 0) {
-                    mainMessage = str;
-                }
 
-            }
+//            for (int g = 0; g < NUM_GESTURES; g++) {
+//                if (strcmp(mouseButtonState, actionString[g].c_str()) == 0) {
+//                    mainMessage = str;
+//                }
+//
+//            }
+//
+//            for (int g = 0; g < NUM_PLACES; g++) {
+//                if (strcmp(mouseButtonState, placeString[g].c_str()) == 0) {
+//                    mainMessage = str;
+//                }
+//
+//            }
 
 
         }
@@ -645,12 +654,14 @@ void agentController::pickedAgent() {
 
 
         if(isSpy){
-            sendMessage("agentDiscovered");
+            //sendMessage("agentDiscovered");
             mainMessage = "GOT HIM!";
+            sendMessage(mainMessage);
         }
         else {
-            sendMessage("agentNotDiscovered");
+            //sendMessage("agentNotDiscovered");
             mainMessage = "NOPE!";
+            sendMessage(mainMessage);
         }
 
 

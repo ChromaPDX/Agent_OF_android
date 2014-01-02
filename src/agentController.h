@@ -88,11 +88,12 @@ public:
 
     int connectedAgents;
 
+
     unsigned long long lastTime;
 
 private:
 
-
+    int activeAgents;
     int step;
     int numSteps;
     unsigned long stepInterval;
