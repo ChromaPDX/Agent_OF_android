@@ -13,7 +13,8 @@
 
 void agentController::setup() {
 
-	font.loadFont("verdana.ttf", ofGetWidth() / 4., true, true);
+	font.loadFont("digital-7.ttf", ofGetWidth() / 4.2, true, true);
+    spyfont.loadFont("webdings.ttf", ofGetWidth() / 5., true, true);
 //	font.setLineHeight(18.0f);
 //	font.setLetterSpacing(1.037);
 
@@ -48,6 +49,29 @@ void agentController::setup() {
 		curveVertices[i].bBeingDragged 	= false;
 		curveVertices[i].radius = 4;
 	}
+
+    sphere.setRadius( ofGetWidth()  );
+
+    mode        = 0;
+   // numTouches  = 0;
+
+    //ofSetSmoothLighting(true);
+    pointLight.setDiffuseColor( ofFloatColor(.85, .85, .55) );
+    pointLight.setSpecularColor( ofFloatColor(1.f, 1.f, 1.f));
+
+    pointLight2.setDiffuseColor( ofFloatColor( 238.f/255.f, 57.f/255.f, 135.f/255.f ));
+    pointLight2.setSpecularColor(ofFloatColor(.8f, .8f, .9f));
+
+    pointLight3.setDiffuseColor( ofFloatColor(19.f/255.f,94.f/255.f,77.f/255.f) );
+    pointLight3.setSpecularColor( ofFloatColor(18.f/255.f,150.f/255.f,135.f/255.f) );
+
+    // shininess is a value between 0 - 128, 128 being the most shiny //
+	material.setShininess( 120 );
+    // the light highlight of the material //
+	material.setSpecularColor(ofColor(255, 255, 255, 255));
+
+    ofSetSphereResolution(24);
+
 
 }
 
@@ -145,11 +169,17 @@ void agentController::updateTCP() {
                     ofLogNotice("TCP") << "Agent:" + ofToString(i) + " : " + str;
 
                     if (strcmp(mouseButtonState, "pickedAgent") == 0) {
-                        pickedAgent();
+                        pickedAgent(i+1);
                     }
 
                     else  if (strcmp(mouseButtonState, "login") == 0) {
                         activeAgents++;
+
+                    }
+
+                    else {// must be a number
+
+                        recordedTimes[i+1] = ofToInt(str);
 
                     }
                 }
@@ -167,43 +197,73 @@ void agentController::updateTCP() {
 
             strcpy( mouseButtonState, str.c_str() );
 
-
             if (strcmp(mouseButtonState, "startGame") == 0) {
                 startGame();
                 sendMessage("login");
             }
 
             else if (strcmp(mouseButtonState, "execute") == 0) {
+
                  ((testApp*) ofGetAppPtr())->vibrate(true);
                  execute(mainMessage);
+
+            }
+
+            else if (strcmp(mouseButtonState, "PICKER") == 0) {
+                ((testApp*) ofGetAppPtr())->vibrate(true);
+                //execute(mainMessage);
+                mainMessage = "PICK";
+                state = GameStateDeciding;
 
             }
 
             else if (strcmp(mouseButtonState, "PICK") == 0) {
                 ((testApp*) ofGetAppPtr())->vibrate(true);
                 //execute(mainMessage);
-                mainMessage = "PICK";
+                mainMessage = "AGENT";
+                state = GameStateDeciding;
+
+            }
+
+            else if (strcmp(mouseButtonState, "spy") == 0) {
+                isSpy = true;
+            }
+
+            else if (strcmp(mouseButtonState, "notspy") == 0) {
+                isSpy = false;
             }
 
             else {
+
+                for (int g = 0; g < NUM_GESTURES; g++) {
+                    if (strcmp(mouseButtonState, actionString[g].c_str()) == 0) {
+
+                        if (isSpy) {
+                            useSpyFont = true;
+                        }
+                        mainMessage = str;
+                    }
+
+                }
+
+                for (int g = 0; g < NUM_PLACES; g++) {
+                    if (strcmp(mouseButtonState, placeString[g].c_str()) == 0) {
+
+
+                        mainMessage = str;
+
+                         useSpyFont = false;
+
+                    }
+
+                }
+
+
                 mainMessage = str;
 
             }
 
 
-//            for (int g = 0; g < NUM_GESTURES; g++) {
-//                if (strcmp(mouseButtonState, actionString[g].c_str()) == 0) {
-//                    mainMessage = str;
-//                }
-//
-//            }
-//
-//            for (int g = 0; g < NUM_PLACES; g++) {
-//                if (strcmp(mouseButtonState, placeString[g].c_str()) == 0) {
-//                    mainMessage = str;
-//                }
-//
-//            }
 
 
         }
@@ -232,7 +292,6 @@ void agentController::sendMessage(string message){
 
 
 
-
 void agentController::countDown(int curstep) {
 
     switch (curstep) {
@@ -253,7 +312,7 @@ void agentController::countDown(int curstep) {
             break;
 
         case 4:
-            mainMessage = "";
+            //mainMessage = "";
 
             state = GameStatePlaying;
             stepInterval = 0;
@@ -283,15 +342,41 @@ void agentController::serveRound(int curstep){
 
 
     if (curstep == numSteps) {
-        mainMessage = "PICK";
-        sendMessage("PICK");
+
+        if (pickerAccordingToServer == 0) {
+            mainMessage = "PICK";
+        }
+        else {
+            mainMessage = "AGENT";
+        }
+
+        for(int i = 0; i < server.getLastID(); i++) // getLastID is UID of all clients
+	    {
+
+            if( server.isClientConnected(i) ) { // check and see if it's still around
+                if (i+1 == pickerAccordingToServer) {
+                    server.send(i,"PICKER");
+                }
+                else {
+                    server.send(i,"PICK");
+                }
+            }
+	    }
+
         stepInterval = 0;
         state = GameStateDeciding;
     }
 
     else if (curstep %3 == 0) { // MESSAGE
 
-        mainMessage = actionString[rand()%3 + 1];
+        for (int i = 0 ; i < 16; i++) {
+            recordedTimes[i] = 5000 + i;
+        }
+
+        mainMessage = actionString[rand()%4 + 1];
+
+        if (isSpy) useSpyFont = true;
+
         sendMessage(mainMessage);
 
         stepInterval = 3000 + rand() % 3000;
@@ -306,12 +391,18 @@ void agentController::serveRound(int curstep){
 
         stepInterval = 3000;
 
+        execute(mainMessage);
+
     }
 
     else if (curstep%3 == 2) { // RESULTS
 
-        mainMessage = placeString[rand()%3];
-        sendMessage(mainMessage);
+
+        countScores();
+
+        useSpyFont = false;
+
+        // sendMessage(mainMessage);
 
         stepInterval = 6000;
 
@@ -324,7 +415,70 @@ void agentController::serveRound(int curstep){
 
 }
 
+void agentController::countScores(){
+
+    int places[16];
+
+    for (int p = 0; p < 16; p++) {
+        places[p] = -1;
+    }
+
+    for(int i = 0; i < server.getLastID() + 1; i++) // getLastID is UID of all clients
+    {
+
+        int lowestTime = 100000;
+
+        for(int j = 0; j < server.getLastID() + 1; j++) // getLastID is UID of all clients
+        {
+
+            if (recordedTimes[j] <= lowestTime) {
+
+                bool shouldRecord = true;
+
+                for (int p = 0; p < 16; p++) {
+                    if (places[p] == j) {
+                        shouldRecord = false;
+                    }
+                }
+
+                if (shouldRecord) {
+                    lowestTime = recordedTimes[j];
+                    places[i] = j;
+                }
+
+            }
+
+        }
+
+        ofLogNotice("PLACES") << ofToString(places[i]) + " is in " + ofToString(i) + " place with " + ofToString(recordedTimes[places[i]]) + "time";
+
+    }
+
+
+
+    for(int i = 0; i < server.getLastID() + 1; i++) // getLastID is UID of all clients
+    {
+
+        if (places[i] != 0) {
+
+            if( server.isClientConnected(places[i] - 1) ) { // check and see if it's still around
+                server.send(places[i]-1, placeString[i]);
+            }
+
+        }
+
+        else {
+            mainMessage = placeString[i];
+        }
+
+
+    }
+
+}
+
 void agentController::execute(string gesture){
+
+    ofLogNotice("RECORD MODE") << "RECORDING: " + gesture;
 
     char mess[128];
 
@@ -352,26 +506,83 @@ void agentController::execute(string gesture){
 
     turnTime = ofGetElapsedTimeMillis();
 
+}
+
+void agentController::updateAccel(ofVec3f newAccel){
+
+    if (newAccel.x != accel.x || newAccel.y != newAccel.y || newAccel.z != accel.z) {
+
+    accel = newAccel;
+    normAccel = accel.getNormalized();
+
+    accelIndex++;
+    if (accelIndex > 127) {
+        accelIndex = 0;
+    }
+
+    float alpha = (float)0.9;
+
+    filteredAccel.x = alpha * filteredAccel.x + (1 - alpha) * normAccel.x;
+    filteredAccel.y = alpha * filteredAccel.y + (1 - alpha) * normAccel.y;
+    filteredAccel.z = alpha * filteredAccel.z + (1 - alpha) * normAccel.z;
+
+    userAccelerationArray[accelIndex] = filteredAccel;
+
+        bool didIt = false;
+
+        if (recordMode == GameActionJump || recordMode == GameActionShake) {
+
+            if (accel.z > .5) {
+
+                didIt = true;
+
+            }
+
+        }
+
+        else if (recordMode == GameActionSpin) {
+            if (accel.y > .5) {
+                didIt = true;
+            }
+        }
+
+
+        if (didIt) {
+
+            recordMode = 0;
+
+            recordedTimes[0] = ofGetElapsedTimeMillis() - turnTime;
+
+            ((testApp*) ofGetAppPtr())->vibrate(true);
+
+            if (isClient) {
+                sendMessage(ofToString(recordedTimes[0]));
+            }
+
+
+        }
+
+
+    }
 
 }
+
+
+
 
 #pragma mark - DRAW
 
 void agentController::draw() {
 
+
     ofClear(0, 0, 0);
 
     ofFill();
 
+    drawSphere();
+
+
     if (isServer || isClient) {
-
-
-        float alpha = (float)0.9;
-
-        filteredAccel.x = alpha * filteredAccel.x + (1 - alpha) * normAccel.x;
-        filteredAccel.y = alpha * filteredAccel.y + (1 - alpha) * normAccel.y;
-        filteredAccel.z = alpha * filteredAccel.z + (1 - alpha) * normAccel.z;
-
 
 
         int nTips = 5;// + xPct * 60;
@@ -568,12 +779,30 @@ void agentController::draw() {
 
         if (mainMessage.length()){
             ofSetColor(255,255,255);
-            font.drawString(mainMessage,ofGetWidth()/2 - font.stringWidth(mainMessage)/2.,ofGetHeight()/2 + font.stringHeight(mainMessage)/2.);
+
+
+            if (useSpyFont) {
+                char spymess[4] = {rand()%127, rand()%127, rand()%127, rand()%127};
+
+                font.drawString(ofToString(spymess),ofGetWidth()/2 - font.stringWidth(ofToString(spymess))/2.,ofGetHeight()/2 + font.stringHeight(ofToString(spymess))/2.);
+            }
+
+            else font.drawString(mainMessage,ofGetWidth()/2 - font.stringWidth(mainMessage)/2.,ofGetHeight()/2 + font.stringHeight(mainMessage)/2.);
+
+
+
         }
 
 
     }
 
+    else {
+
+            mainMessage = "NO LINK";
+            ofSetColor(255,255,255);
+            font.drawString(mainMessage,ofGetWidth()/2 - font.stringWidth(mainMessage)/2.,ofGetHeight()/2 + font.stringHeight(mainMessage)/2.);
+
+    }
     if (isServer) { // SERVER ONLY DRAW
 
         // CONNECTED AGENTS
@@ -603,6 +832,166 @@ void agentController::draw() {
     //    {
     //        ofDrawBitmapString( (char*)msg_strings[i].c_str(), 10, 40+15*i );
     //    }
+
+}
+
+bool agentController::processAcceleration() {
+
+
+    bool foundHighZ;
+    bool foundLowZ;
+
+    for (int i = 0; i < 128; i++) {
+
+        if (userAccelerationArray[i].z > 1) {
+            foundHighZ = true;
+        }
+
+        if (userAccelerationArray[i].z < -1) {
+            foundLowZ = true;
+        }
+
+
+    }
+
+
+    if (foundLowZ && foundHighZ) {
+        return 1;
+    }
+
+    else return 0;
+
+}
+
+
+void agentController::drawSphere() {
+
+
+    float spinX = sin(ofGetElapsedTimef()*.35f);
+    float spinY = cos(ofGetElapsedTimef()*.075f);
+
+    ofEnableDepthTest();
+
+    ofEnableLighting();
+//    pointLight.enable();
+//    pointLight2.enable();
+//    pointLight3.enable();
+//
+	material.begin();
+
+
+
+    ofSetColor(180);
+    ofNoFill();
+   // ofDrawSphere(ofGetWidth()/2, ofGetHeight()/2, ofGetWidth());
+
+    //if(mode == 1 || mode == 2) texture.getTextureReference().bind();
+
+    // Sphere //
+
+    sphere.setPosition(ofGetWidth()*.5, ofGetHeight()*.5, 0);
+
+    sphere.rotate(spinX, 1.0, 0.0, 0.0);
+    sphere.rotate(spinY, 0, 1.0, 0.0);
+
+
+    vector<ofMeshFace> triangles;
+    if(mode == 2) {
+        // to get unique triangle, you have to use triangles mode //
+        sphere.setMode( OF_PRIMITIVE_TRIANGLES );
+        triangles = sphere.getMesh().getUniqueFaces();
+    }
+
+//    if(bFill) {
+//        ofFill();
+//        ofSetColor(255);
+//        if(mode == 2) {
+//            float angle = ofGetElapsedTimef()*3.2;
+//            float strength = (sin( angle )) * .25f * 2.f;
+//            ofVec3f faceNormal;
+//            for(int i = 0; i < triangles.size(); i++ ) {
+//                // store the face normal here.
+//                // we change the vertices, which makes the face normal change
+//                // every time that we call getFaceNormal //
+//                faceNormal = triangles[i].getFaceNormal();
+//                for(int j = 0; j < 3; j++ ) {
+//                    triangles[i].setVertex( j, triangles[i].getVertex(j) + faceNormal * strength);
+//                }
+//            }
+//            sphere.getMesh().setFromTriangles( triangles );
+//        }
+//        sphere.draw();
+//
+//    }
+
+    if(bWireframe) {
+        ofNoFill();
+        ofSetColor(0, 0, 0);
+        if(!bFill) ofSetColor(255);
+        sphere.setScale(1.01f);
+        sphere.drawWireframe();
+        sphere.setScale(1.f);
+    }
+
+    ofFill();
+
+//
+//    // ICO Sphere //
+//    icoSphere.setPosition(ofGetWidth()*.2, ofGetHeight()*.75, 0);
+//    icoSphere.rotate(spinX, 1.0, 0.0, 0.0);
+//    icoSphere.rotate(spinY, 0, 1.0, 0.0);
+//
+//    if(mode == 2) {
+//        triangles = icoSphere.getMesh().getUniqueFaces();
+//    }
+//
+//    if(bFill) {
+//        ofFill();
+//        ofSetColor(255);
+//
+//        if(mode == 2) {
+//            float angle = (ofGetElapsedTimef() * 1.4);
+//            ofVec3f faceNormal;
+//            for(int i = 0; i < triangles.size(); i++ ) {
+//                float frc = ofSignedNoise(angle* (float)i * .1, angle*.05) * 4;
+//                faceNormal = triangles[i].getFaceNormal();
+//                for(int j = 0; j < 3; j++ ) {
+//                    triangles[i].setVertex(j, triangles[i].getVertex(j) + faceNormal * frc );
+//                }
+//            }
+//            icoSphere.getMesh().setFromTriangles( triangles );
+//        }
+//
+//        icoSphere.draw();
+//    }
+//    if(bWireframe) {
+//        ofNoFill();
+//        ofSetColor(0, 0, 0);
+//        if(!bFill) ofSetColor(255);
+//        icoSphere.setScale(1.01f);
+//        icoSphere.drawWireframe();
+//        icoSphere.setScale(1.f);
+//    }
+//
+
+
+  //  if(mode == 1 || mode == 2) texture.getTextureReference().unbind();
+
+    material.end();
+    ofDisableLighting();
+
+//    if(bDrawLights) {
+//        ofFill();
+//        ofSetColor(pointLight.getDiffuseColor());
+//        pointLight.draw();
+//        ofSetColor(pointLight2.getDiffuseColor());
+//        pointLight2.draw();
+//        ofSetColor(pointLight3.getDiffuseColor());
+//        pointLight3.draw();
+//    }
+
+    ofDisableDepthTest();
+
 
 }
 
@@ -648,12 +1037,14 @@ void agentController::update() {
         }
     }
 
+
+
 }
 
-void agentController::pickedAgent() {
+void agentController::pickedAgent(int agent) {
 
 
-        if(isSpy){
+        if(agent == spyAccordingToServer){
             //sendMessage("agentDiscovered");
             mainMessage = "GOT HIM!";
             sendMessage(mainMessage);
@@ -671,6 +1062,64 @@ void agentController::pickedAgent() {
 }
 
 void agentController::startGame(){
+
+    if (isServer){
+
+        state = GameStatePlaying;
+
+
+        spyAccordingToServer = rand() % (server.getLastID() + 1);
+        pickerAccordingToServer = rand() % (server.getLastID() + 1);
+
+        if (spyAccordingToServer != 0){
+            while (!server.isClientConnected(spyAccordingToServer-1)){
+                spyAccordingToServer = rand() % (server.getLastID() + 1);
+            }
+
+        }
+
+        while (pickerAccordingToServer == spyAccordingToServer){
+
+            pickerAccordingToServer = rand() % (server.getLastID() + 1);
+
+        }
+
+        ofLogNotice("AGENT") << "PICKER IS: " + ofToString(pickerAccordingToServer);
+
+
+        for(int i = 0; i < server.getLastID() + 1; i++) // getLastID is UID of all clients
+        {
+
+            if (i == spyAccordingToServer) {
+
+                if (i == 0) {
+                    isSpy = true;
+                }
+
+                else {
+                    server.send(i-1, "spy");
+                }
+
+
+
+            }
+
+            else {
+
+                if (i == 0) {
+                    isSpy = false;
+                }
+
+                else {
+                    server.send(i-1, "notspy");
+                }
+
+            }
+
+
+        }
+    }
+
 
     step = 0;
     stepInterval = 2000;
@@ -706,11 +1155,11 @@ void agentController::startGame(){
 void agentController::touchBegan(int x, int y, int id){
 
 
-	unsigned long long time = ofGetElapsedTimeMillis();
+	//unsigned long long time = ofGetElapsedTimeMillis();
 
-	sendMessage(ofToString(time - lastTime));
+	//sendMessage(ofToString(time - lastTime));
 
-	lastTime = time;
+	//lastTime = time;
 
     //	GameStateWaitingForSignIn,
     //	GameStatePlaying,
@@ -741,11 +1190,13 @@ void agentController::touchBegan(int x, int y, int id){
             if (recordMode == GameActionTouch) {
 
                 recordMode = 0;
-                recordedTime = ofGetElapsedTimeMillis() - turnTime;
+
+                recordedTimes[0] = ofGetElapsedTimeMillis() - turnTime;
+
                 ((testApp*) ofGetAppPtr())->vibrate(true);
 
                 if (isClient) {
-                    sendMessage(ofToString(recordedTime));
+                    sendMessage(ofToString(recordedTimes[0]));
                 }
 
             }
@@ -757,7 +1208,7 @@ void agentController::touchBegan(int x, int y, int id){
 
             if (isServer) {
 
-                pickedAgent();
+                pickedAgent(0);
 
             }
             else if (isClient){
@@ -843,9 +1294,20 @@ void agentController::setIpAddress(const char* ipAddress){
         const char* last = result[3].c_str();
 
         if (last[0] == '1'){
-        	isServer = true;
-        	server.setup(PORT);
-        	ofLogNotice("TCP") << "IS SERVER AT:" + localIP + " on port:" << ofToString(PORT);
+
+            if (server.setup(PORT)) {
+                isServer = true;
+                ofLogNotice("TCP") << "IS SERVER AT:" + localIP + " on port:" << ofToString(PORT);
+                mainMessage = "AGENT";
+            }
+
+            else {
+                server.close();
+                ofLogNotice("TCP") << "SERVER FAILED !!";
+                mainMessage = "RESTART";
+
+            }
+
         }
 
         //        int index = 0;
@@ -911,6 +1373,7 @@ void agentController::setIpAddress(const char* ipAddress){
             if (client.setup (serverIP, PORT)){
                 isClient = true;
                 ofLogNotice("TCP") << "connect to server at " + serverIP + " port: " << ofToString(PORT) << "\n";
+                mainMessage = "AGENT";
             }
         }
 

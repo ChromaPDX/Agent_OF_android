@@ -55,12 +55,8 @@ void testApp::update(){
 
 	//ofLogNotice("UPDATE") << "updating . . .";
 
-	agent.accel = ofxAccelerometer.getForce();
+	agent.updateAccel(ofxAccelerometer.getForce());
 
-	agent.messages[0] = "g(x) = " + ofToString(agent.accel.x,2);
-	agent.messages[1] = "g(y) = " + ofToString(agent.accel.y,2);
-	agent.messages[2] = "g(z) = " + ofToString(agent.accel.z,2);
-	agent.normAccel = agent.accel.getNormalized();
 
 	agent.update();
 

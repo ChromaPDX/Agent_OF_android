@@ -81,9 +81,12 @@ public:
 
 	ofVec3f accel, normAccel;
 
+    void updateAccel(ofVec3f newAccel);
+
 	string messages[3];
 
     ofTrueTypeFont font;
+    ofTrueTypeFont spyfont;
     ofTrueTypeFont fontSmall;
 
     int connectedAgents;
@@ -127,14 +130,25 @@ private:
 
     // STUFF RELATED TO SECRET AGENT
 
+    int accelIndex = 0;
+    ofVec3f userAccelerationArray[128];
+
     GameState state;
 
     string mainMessage;
 
-    unsigned long long elapsed, turnTime, recordedTime;
-    bool recordMode;
+    unsigned long long elapsed, turnTime;
+
+    unsigned long long recordedTimes[16];
+
+    int scores[16];
+
+    int recordMode;
     bool isSpy;
-    int spyIndexAccordingToServer;
+    bool useSpyFont;
+
+    int pickerAccordingToServer;
+    int spyAccordingToServer;
     int pickerIndexAccordingToServer;
 
     string placeString[NUM_PLACES] = {"1st","2nd","3rd","4th","5th","6th","7th","8th"};
@@ -142,25 +156,39 @@ private:
     string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN"};
 
 
-    ofVec3f userAccelerationArray[8];
 
 
     // GAME STATE FUNCTIONS
 
-    void pickedAgent();
+    void pickedAgent(int agent);
     void buttonPress();
     void startGame();
     void serveRound(int curstep);
     void execute(string gesture);
 
+    bool processAcceleration();
+
     void countDown(int curstep);
 
+    void countScores();
 
     // ART DEPT
+
+    void drawSphere();
 
     int nCurveVertices;
     draggableVertex curveVertices[7];
     draggableVertex bezierVertices[4];
+
+    ofSpherePrimitive sphere;
+    int mode;
+    bool bFill;
+    bool bWireframe = true;
+    ofLight pointLight;
+    ofLight pointLight2;
+    ofLight pointLight3;
+    ofMaterial material;
+
 
 };
 
