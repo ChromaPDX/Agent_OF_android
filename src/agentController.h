@@ -15,6 +15,8 @@
 
 #define NUM_MSG_STRINGS 20
 #define PORT 3456
+#define NUM_GESTURES 5
+#define NUM_PLACES 8
 
 typedef enum
 {
@@ -24,6 +26,28 @@ typedef enum
 	GameStateGameOver
 }
 GameState;
+
+typedef enum
+{
+	GameActionFreeze,
+    GameActionTouch,
+    GameActionJump,
+    GameActionShake,
+    GameActionSpin
+}
+GameAction;
+
+
+
+typedef struct{
+
+	float x;
+	float y;
+	bool bBeingDragged;
+	bool bOver;
+	float radius;
+
+} draggableVertex;
 
 class agentController {
 	
@@ -60,6 +84,9 @@ public:
 	string messages[3];
 
     ofTrueTypeFont font;
+    ofTrueTypeFont fontSmall;
+
+    int connectedAgents;
 
     unsigned long long lastTime;
 
@@ -94,8 +121,8 @@ private:
     int                             mouseX, mouseY;
     char                    mouseButtonState[128];
 
-    bool isClient;
-    bool isServer;
+    bool isClient = false;
+    bool isServer = false;
 
     // STUFF RELATED TO SECRET AGENT
 
@@ -103,13 +130,16 @@ private:
 
     string mainMessage;
 
-    unsigned long long elapsed, turnTime;
+    unsigned long long elapsed, turnTime, recordedTime;
     bool recordMode;
     bool isSpy;
     int spyIndexAccordingToServer;
     int pickerIndexAccordingToServer;
 
-    string placeString[8] = {"first","second","third","fourth","fifth","sixth","seventh","eighth"};
+    string placeString[NUM_PLACES] = {"1st","2nd","3rd","4th","5th","6th","7th","8th"};
+
+    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN"};
+
 
     ofVec3f userAccelerationArray[8];
 
@@ -119,8 +149,17 @@ private:
     void pickedAgent();
     void buttonPress();
     void startGame();
+    void serveRound(int curstep);
+    void execute(string gesture);
 
     void countDown(int curstep);
+
+
+    // ART DEPT
+
+    int nCurveVertices;
+    draggableVertex curveVertices[7];
+    draggableVertex bezierVertices[4];
 
 };
 
