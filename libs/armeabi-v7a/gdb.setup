@@ -1,6 +1,6 @@
-set solib-search-path /Users/chroma/Code/eclipse_workspace/of_v0.8.0_android_release/apps/myApps/DoubleAgent/obj/local/armeabi-v7a:/Users/chroma/Code/eclipse_workspace/of_v0.8.0_android_release/apps/myApps/DoubleAgent/libs/armeabi-v7a
-directory /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/platforms/android-14/arch-arm/usr/include
-directory /Users/chroma/Code/eclipse_workspace/of_v0.8.0_android_release/apps/myApps/DoubleAgent/src
-directory /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/system
-directory /Users/chroma/Code/eclipse_workspace/of_v0.8.0_android_release/apps/myApps/DoubleAgent/libs/armeabi-v7a
+set solib-search-path /Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/obj/local/armeabi-v7a:/Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/libs/armeabi-v7a
+directory /Users/robby/Code/ANDROID/android-ndk-r8d/platforms/android-14/arch-arm/usr/include
+directory /Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/src
+directory /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/system
+directory /Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/libs/armeabi-v7a
 

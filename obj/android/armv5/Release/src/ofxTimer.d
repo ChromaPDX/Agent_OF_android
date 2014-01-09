@@ -1,22 +1,22 @@
 obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/openFrameworks/ofMain.h \
  ../../../libs/openFrameworks/utils/ofConstants.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/typeinfo \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/typeinfo \
  ../../../libs/tess2/include/tesselator.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstdlib \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstdio \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstdarg \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cmath \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/ctime \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/string \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/iostream \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/vector \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstring \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/sstream \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/iomanip \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/fstream \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/algorithm \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cfloat \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstdlib \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstdio \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstdarg \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cmath \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/ctime \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/string \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/iostream \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/vector \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstring \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/sstream \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/iomanip \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/fstream \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/algorithm \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cfloat \
  ../../../libs/openFrameworks/utils/ofFileUtils.h \
  ../../../libs/poco/include/Poco/File.h \
  ../../../libs/poco/include/Poco/Foundation.h \
@@ -30,16 +30,16 @@ obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/openFrameworks/utils/ofLog.h \
  ../../../libs/openFrameworks/types/ofTypes.h \
  ../../../libs/openFrameworks/types/ofColor.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/limits \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/limits \
  ../../../libs/openFrameworks/math/ofMath.h \
  ../../../libs/openFrameworks/types/ofPoint.h \
  ../../../libs/openFrameworks/math/ofVec3f.h \
  ../../../libs/openFrameworks/math/ofVec2f.h \
  ../../../libs/openFrameworks/math/ofVec4f.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/tr1/memory \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/tr1/memory \
  ../../../libs/poco/include/Poco/Mutex.h \
  ../../../libs/poco/include/Poco/Exception.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/stdexcept \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/stdexcept \
  ../../../libs/poco/include/Poco/ScopedLock.h \
  ../../../libs/poco/include/Poco/Mutex_POSIX.h \
  ../../../libs/openFrameworks/utils/ofSystemUtils.h \
@@ -54,8 +54,8 @@ obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/poco/include/Poco/AtomicCounter.h \
  ../../../libs/poco/include/Poco/AutoPtr.h \
  ../../../libs/openFrameworks/utils/ofURLFileLoader.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/deque \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/queue \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/deque \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/queue \
  ../../../libs/openFrameworks/events/ofEvents.h \
  ../../../libs/openFrameworks/events/ofEventUtils.h \
  ../../../libs/poco/include/Poco/PriorityEvent.h \
@@ -78,7 +78,7 @@ obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/poco/include/Poco/Condition.h \
  ../../../libs/poco/include/Poco/ScopedUnlock.h \
  ../../../libs/openFrameworks/utils/ofUtils.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/bitset \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/bitset \
  ../../../libs/poco/include/Poco/Path.h \
  ../../../libs/openFrameworks/types/ofBaseTypes.h \
  ../../../libs/openFrameworks/types/ofRectangle.h \
@@ -88,7 +88,7 @@ obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/openFrameworks/math/ofMatrix4x4.h \
  ../../../libs/openFrameworks/math/ofQuaternion.h \
  ../../../libs/openFrameworks/utils/ofXml.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/numeric \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/numeric \
  ../../../libs/poco/include/Poco/DOM/Document.h \
  ../../../libs/poco/include/Poco/XML/XML.h \
  ../../../libs/poco/include/Poco/DOM/AbstractContainerNode.h \
@@ -98,8 +98,8 @@ obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/poco/include/Poco/DOM/DOMObject.h \
  ../../../libs/poco/include/Poco/XML/XMLString.h \
  ../../../libs/poco/include/Poco/SAX/NamespaceSupport.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/set \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/map \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/set \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/map \
  ../../../libs/poco/include/Poco/DOM/MutationEvent.h \
  ../../../libs/poco/include/Poco/DOM/Event.h \
  ../../../libs/poco/include/Poco/DOM/DocumentEvent.h \
@@ -107,7 +107,7 @@ obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/poco/include/Poco/XML/Name.h \
  ../../../libs/poco/include/Poco/XML/NamePool.h \
  ../../../libs/poco/include/Poco/AutoReleasePool.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/list \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/list \
  ../../../libs/poco/include/Poco/DOM/DocumentFragment.h \
  ../../../libs/poco/include/Poco/DOM/DOMParser.h \
  ../../../libs/poco/include/Poco/SAX/SAXParser.h \
@@ -149,7 +149,7 @@ obj/android/armv5/Release/src/ofxTimer.o: src/ofxTimer.cpp src/ofxTimer.h \
  ../../../libs/openFrameworks/gl/ofGLUtils.h \
  ../../../libs/openFrameworks/gl/ofGLRenderer.h \
  ../../../libs/openFrameworks/graphics/ofPolyline.h \
- /Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/stack \
+ /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/stack \
  ../../../libs/openFrameworks/graphics/ofGraphics.h \
  ../../../libs/openFrameworks/utils/ofMatrixStack.h \
  ../../../libs/openFrameworks/gl/ofLight.h \
@@ -188,37 +188,37 @@ src/ofxTimer.h:
 
 ../../../libs/openFrameworks/utils/ofConstants.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/typeinfo:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/typeinfo:
 
 ../../../libs/tess2/include/tesselator.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstdlib:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstdlib:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstdio:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstdio:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstdarg:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstdarg:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cmath:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cmath:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/ctime:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/ctime:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/string:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/string:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/iostream:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/iostream:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/vector:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/vector:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cstring:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cstring:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/sstream:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/sstream:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/iomanip:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/iomanip:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/fstream:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/fstream:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/algorithm:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/algorithm:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/cfloat:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/cfloat:
 
 ../../../libs/openFrameworks/utils/ofFileUtils.h:
 
@@ -246,7 +246,7 @@ src/ofxTimer.h:
 
 ../../../libs/openFrameworks/types/ofColor.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/limits:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/limits:
 
 ../../../libs/openFrameworks/math/ofMath.h:
 
@@ -258,13 +258,13 @@ src/ofxTimer.h:
 
 ../../../libs/openFrameworks/math/ofVec4f.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/tr1/memory:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/tr1/memory:
 
 ../../../libs/poco/include/Poco/Mutex.h:
 
 ../../../libs/poco/include/Poco/Exception.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/stdexcept:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/stdexcept:
 
 ../../../libs/poco/include/Poco/ScopedLock.h:
 
@@ -294,9 +294,9 @@ src/ofxTimer.h:
 
 ../../../libs/openFrameworks/utils/ofURLFileLoader.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/deque:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/deque:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/queue:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/queue:
 
 ../../../libs/openFrameworks/events/ofEvents.h:
 
@@ -342,7 +342,7 @@ src/ofxTimer.h:
 
 ../../../libs/openFrameworks/utils/ofUtils.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/bitset:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/bitset:
 
 ../../../libs/poco/include/Poco/Path.h:
 
@@ -362,7 +362,7 @@ src/ofxTimer.h:
 
 ../../../libs/openFrameworks/utils/ofXml.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/numeric:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/numeric:
 
 ../../../libs/poco/include/Poco/DOM/Document.h:
 
@@ -382,9 +382,9 @@ src/ofxTimer.h:
 
 ../../../libs/poco/include/Poco/SAX/NamespaceSupport.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/set:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/set:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/map:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/map:
 
 ../../../libs/poco/include/Poco/DOM/MutationEvent.h:
 
@@ -400,7 +400,7 @@ src/ofxTimer.h:
 
 ../../../libs/poco/include/Poco/AutoReleasePool.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/list:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/list:
 
 ../../../libs/poco/include/Poco/DOM/DocumentFragment.h:
 
@@ -484,7 +484,7 @@ src/ofxTimer.h:
 
 ../../../libs/openFrameworks/graphics/ofPolyline.h:
 
-/Users/chroma/Code/eclipse_workspace/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.8/include/stack:
+/Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/gnu-libstdc++/4.7/include/stack:
 
 ../../../libs/openFrameworks/graphics/ofGraphics.h:
 

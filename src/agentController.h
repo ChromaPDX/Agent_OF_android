@@ -17,6 +17,7 @@
 #define PORT 3456
 #define NUM_GESTURES 5
 #define NUM_PLACES 8
+#define NUM_TURNS 4  // per round
 
 typedef enum
 {
@@ -37,159 +38,85 @@ typedef enum
 }
 GameAction;
 
-
-
-typedef struct{
-
-	float x;
-	float y;
-	bool bBeingDragged;
-	bool bOver;
-	float radius;
-
-} draggableVertex;
-
 class agentController {
 	
 public:
+
+    // NETWORKING
+    void setIpAddress(const char *ipAddress);
+
+    // SENSORS
+    void updateAccel(ofVec3f newAccel);
+
+    // OPENFRAMEWORKS
     void setup();
     void update();
-
-    void updateOSC();
-    void updateTCP();
-
     void draw();
     void exit();
-    
 	void pause();
 	void resume();
-
     void touchBegan(int x, int y, int id);
     void touchMoved(int x, int y, int id);
     void touchEnded(int x, int y, int id);
 
-    void setIpAddress(const char *ipAddress);
+private:
 
-    void sendMessage(string message);
-
-	ofxOscSender sender;
-	ofxOscReceiver  receiver;
-
+    // NETWORKING
 	ofxTCPServer server;
 	ofxTCPClient client;
+    int connectedAgents;  // client stores from server server.getNumClients()
+	std::string localIP;
+	std::string serverIP;
+    bool isClient = false;
+    bool isServer = false;
+    void updateTCP();  // packet sniffer, server and client
+    void updateSlowTCP();  // packet sniffer, server and client, only called once per second
+    void sendMessage(string message);   // if client, send to server.  if server, send to all clients
+    int oneSecond;
 
-
+    // SENSORS
 	ofVec3f accel, normAccel;
+    ofVec3f filteredAccel;
+    ofVec3f userAccelerationArray[128];
+    int accelIndex = 0;  // filter array index
 
-    void updateAccel(ofVec3f newAccel);
+    // STUFF RELATED TO SECRET AGENT
+    GameState state;
+    typedef void (*StepFunctionPtr)(int);
+    void (agentController::*stepFunction)(int);
+    void countDown(int curstep);  // can be stepFunction
+    void serveRound(int curstep); // can be stepFunction   (server only function)
+    int step;  // game loop interval. used for countdowns and rounds, increments to 3 for countdown, increments to TURNS*3 for rounds
+    int numSteps;  // sets the ceiling of each countdown and round. 3 for countdowns, TURNS*3 for rounds
+    unsigned long stepInterval;  // period between a step
+    unsigned long long stepTimer;  // timestamp beginning of a step to offset against
 
-	string messages[3];
+    string mainMessage;   // the action command, used for display and orientation within the game loop
+    string placeString[NUM_PLACES] = {"1st","2nd","3rd","4th","5th","6th","7th","8th"};
+    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN"};
 
+    unsigned long long turnTime; //elapsed;  // beginning of each turn. for calculating reaction time
+    unsigned long long recordedTimes[16];  // index [0] is always for self. server utilizes all the rest of the indexes, correlates to clientID
+
+    int recordMode;  // GameAction type   // is 0 being used properly?
+    bool isSpy;    // set when client receives "spy" or "notspy"
+    bool useSpyFont;    // dynamically switches on DAs phone, represents scrambled text or unscrambled
+    int pickerAccordingToServer;
+    int spyAccordingToServer;
+
+    void startGame();        // initiated by server with "startGame", used by clients and servers
+    void execute(string gesture);   // the moment a turn begins, timers start
+    void countScores();       // server only
+    void pickedAgent(int agent);
+
+    // OF / UI / UX
+    int mouseX, mouseY;
+    char mouseButtonState[128];
     ofTrueTypeFont font;
     ofTrueTypeFont spyfont;
     ofTrueTypeFont fontSmall;
-
-    int connectedAgents;
-
-
-    unsigned long long lastTime;
-
-private:
-
-    int activeAgents;
-    int step;
-    int numSteps;
-    unsigned long stepInterval;
-    unsigned long long stepTimer;
-
-    typedef void (*StepFunctionPtr)(int);
-
-    //StepFunctionPtr stepFunction;
-
-    void (agentController::*stepFunction)(int);
-
-    //void (*stepFunction)(int) = NULL;
-
-    ofVec3f filteredAccel;
-
-	//char localIP[16];
-	std::string localIP;
-	std::string broadcastIP;
-	std::string serverIP;
-
-
-    int                             current_msg_string;
-    std::string             msg_strings[NUM_MSG_STRINGS];
-    float                   timers[NUM_MSG_STRINGS];
-
-    int                             mouseX, mouseY;
-    char                    mouseButtonState[128];
-
-    bool isClient = false;
-    bool isServer = false;
-
-    // STUFF RELATED TO SECRET AGENT
-
-    int accelIndex = 0;
-    ofVec3f userAccelerationArray[128];
-
-    GameState state;
-
-    string mainMessage;
-
-    unsigned long long elapsed, turnTime;
-
-    unsigned long long recordedTimes[16];
-
-    int scores[16];
-
-    int recordMode;
-    bool isSpy;
-    bool useSpyFont;
-
-    int pickerAccordingToServer;
-    int spyAccordingToServer;
-    int pickerIndexAccordingToServer;
-
-    string placeString[NUM_PLACES] = {"1st","2nd","3rd","4th","5th","6th","7th","8th"};
-
-    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN"};
-
-
-
-
-    // GAME STATE FUNCTIONS
-
-    void pickedAgent(int agent);
-    void buttonPress();
-    void startGame();
-    void serveRound(int curstep);
-    void execute(string gesture);
-
-    bool processAcceleration();
-
-    void countDown(int curstep);
-
-    void countScores();
-
-    // ART DEPT
-
-    void drawSphere();
-
-    int nCurveVertices;
-    draggableVertex curveVertices[7];
-    draggableVertex bezierVertices[4];
-
     ofSpherePrimitive sphere;
-    int mode;
-    bool bFill;
-    bool bWireframe = true;
-    ofLight pointLight;
-    ofLight pointLight2;
-    ofLight pointLight3;
-    ofMaterial material;
-
-
+    void drawAnimatedBackground();
 };
 
 #endif /* defined(__DoubleAgent__agentController__) */
