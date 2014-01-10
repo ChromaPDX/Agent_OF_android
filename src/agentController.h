@@ -94,6 +94,7 @@ private:
     string mainMessage;   // the action command, used for display and orientation within the game loop
     string placeString[NUM_PLACES] = {"1st","2nd","3rd","4th","5th","6th","7th","8th"};
     string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN"};
+    char spymess[4];  // scrambled text
 
     unsigned long long turnTime; //elapsed;  // beginning of each turn. for calculating reaction time
     unsigned long long recordedTimes[16];  // index [0] is always for self. server utilizes all the rest of the indexes, correlates to clientID

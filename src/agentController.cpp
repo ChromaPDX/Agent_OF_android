@@ -16,6 +16,10 @@ void agentController::setup() {
 	font.loadFont("digital-7.ttf", ofGetWidth() / 4.2, true, true);
     spyfont.loadFont("webdings.ttf", ofGetWidth() / 5., true, true);
     fontSmall.loadFont("verdana.ttf", 40, true, true);
+    spymess[0] = rand()%127;
+    spymess[1] = rand()%127;
+    spymess[2] = rand()%127;
+    spymess[3] = rand()%127;
 //	font.setLetterSpacing(1.037);
 
 //    elapsed = ofGetElapsedTimeMillis();
@@ -254,7 +258,8 @@ void agentController::serveRound(int curstep){
         }
 
         mainMessage = actionString[rand()%(NUM_GESTURES-1) + 1];
-        if (isSpy) useSpyFont = true;
+        //if (isSpy)
+            useSpyFont = true;   // everyone begins with scrambled text
         sendMessage(mainMessage);
         ((testApp*) ofGetAppPtr())->vibrate(true);
 
@@ -480,10 +485,13 @@ void agentController::draw() {
             ofSetColor(255,255,255);
 
             if (useSpyFont) {
-                char spymess[4] = {rand()%127, rand()%127, rand()%127, rand()%127};
-
+                if(rand()%2 == 0){
+                    int index = rand()%4;
+                    spymess[index] = rand()%127;
+                }
                 font.drawString(ofToString(spymess),ofGetWidth()/2 - font.stringWidth(ofToString(spymess))/2.,ofGetHeight()/2 + font.stringHeight(ofToString(spymess))/2.);
             }
+
             else
                 font.drawString(mainMessage,ofGetWidth()/2 - font.stringWidth(mainMessage)/2.,ofGetHeight()/2 + font.stringHeight(mainMessage)/2.);
         }
