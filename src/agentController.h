@@ -72,7 +72,7 @@ private:
     void updateTCP();  // packet sniffer, server and client
     void updateSlowTCP();  // packet sniffer, server and client, only called once per second
     void sendMessage(string message);   // if client, send to server.  if server, send to all clients
-    int oneSecond;
+    int oneSecond;  // tracking time, preventing updateSlowTCP() redundant calls
 
     // SENSORS
 	ofVec3f accel, normAccel;

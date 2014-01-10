@@ -78,7 +78,7 @@ void agentController::updateTCP() {
 //                sendMessage("login");
             }
             else if (strcmp(mouseButtonState, "execute") == 0) {
-                 ((testApp*) ofGetAppPtr())->vibrate(true);
+//                 ((testApp*) ofGetAppPtr())->vibrate(true);
                  execute(mainMessage);
             }
             else if (strcmp(mouseButtonState, "PICKER") == 0) {
@@ -103,8 +103,9 @@ void agentController::updateTCP() {
                 bool wasActionMove = false;
                 for (int g = 0; g < NUM_GESTURES; g++) {
                     if (strcmp(mouseButtonState, actionString[g].c_str()) == 0) {
-                        if (isSpy)
-                            useSpyFont = true;
+                        ((testApp*) ofGetAppPtr())->vibrate(true);
+                        //if (isSpy)
+                            useSpyFont = true;  // everybody's appears scrambled to begin
                         mainMessage = str;
                         wasActionMove = true;
                     }
@@ -117,7 +118,6 @@ void agentController::updateTCP() {
                     }
                 }
                 if(!wasActionMove){  // must be a number
-//                    ofLogNotice("MUST BE A NUMBER: ") << str;
                     connectedAgents = ofToInt(str);
                 }
             }
@@ -159,8 +159,8 @@ void agentController::countDown(int curstep) {
 
     if (!curstep) {  // possible for server and clients
         step = 0;
-        stepInterval = 2000;
-        numSteps = 3;
+        stepInterval = 1000;
+        numSteps = 5;
         stepTimer = ofGetElapsedTimeMillis();
 
         stepFunction = &agentController::countDown;
@@ -171,21 +171,31 @@ void agentController::countDown(int curstep) {
     switch (curstep) {
 
         case 1:
-            mainMessage = "3";
+            mainMessage = "5";
             ((testApp*) ofGetAppPtr())->vibrate(true);
             break;
 
         case 2:
-            mainMessage = "2";
-            ((testApp*) ofGetAppPtr())->vibrate(true);
+            mainMessage = "4";
+//            ((testApp*) ofGetAppPtr())->vibrate(true);
             break;
 
         case 3:
-            mainMessage = "1";
-            ((testApp*) ofGetAppPtr())->vibrate(true);
+            mainMessage = "3";
+//            ((testApp*) ofGetAppPtr())->vibrate(true);
             break;
 
         case 4:
+            mainMessage = "2";
+//            ((testApp*) ofGetAppPtr())->vibrate(true);
+            break;
+
+        case 5:
+            mainMessage = "1";
+//            ((testApp*) ofGetAppPtr())->vibrate(true);
+            break;
+
+        case 6:
             //mainMessage = "";
 
             state = GameStatePlaying;
@@ -246,14 +256,15 @@ void agentController::serveRound(int curstep){
         mainMessage = actionString[rand()%(NUM_GESTURES-1) + 1];
         if (isSpy) useSpyFont = true;
         sendMessage(mainMessage);
+        ((testApp*) ofGetAppPtr())->vibrate(true);
 
-        stepInterval = 3000 + rand() % 3000;
+        stepInterval = 1000 + rand() % 3000;
     }
     else if (curstep%3 == 1) { // EXCECUTE
 
         sendMessage("execute");
 
-        ((testApp*) ofGetAppPtr())->vibrate(true);
+//        ((testApp*) ofGetAppPtr())->vibrate(true);
 
         stepInterval = 3000;
 
@@ -319,6 +330,10 @@ void agentController::countScores(){
 }
 
 void agentController::execute(string gesture){
+
+    if(!isSpy){
+        useSpyFont = false;
+    }
 
     ofLogNotice("RECORD MODE") << "RECORDING: " + gesture;
 
