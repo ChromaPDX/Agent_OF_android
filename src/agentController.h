@@ -59,6 +59,8 @@ public:
     void touchMoved(int x, int y, int id);
     void touchEnded(int x, int y, int id);
 
+    ofMatrix4x4 attitudeMatrix;
+
 private:
 
     // NETWORKING

@@ -57,7 +57,6 @@ void testApp::update(){
 
 	agent.updateAccel(ofxAccelerometer.getForce());
 
-
 	agent.update();
 
 
@@ -73,6 +72,10 @@ void testApp::vibrate(bool on){
 	}
 
 }
+
+
+
+
 //--------------------------------------------------------------
 void testApp::draw(){
 
@@ -172,6 +175,30 @@ void testApp::setIpAddress(const char* ipAddress){
 }
 
 
+void testApp::updateRotationMatrix(float m00, float m10,float m20,float m30,
+                    float m01,float m11,float m21,float m31,
+                    float m02,float m12,float m22,float m32,
+                    float m03,float m13,float m23, float m33){
+
+        agent.attitudeMatrix = ofMatrix4x4(m00, m10, m20, m30,
+             -m02, -m12, -m22, -m32,
+             m01, m11, m21, m31,
+              m03, m13, m23, 1.);
+
+        logSensorOrientation(agent.attitudeMatrix);
+}
+
+void testApp::logSensorOrientation(ofMatrix4x4 attitudeMatrix){
+    static int timeIndex;
+    timeIndex++;
+    if(timeIndex % 30 == 0)
+        ofLogNotice("ORIENTATION") <<
+        "\n[ " << attitudeMatrix._mat[0].x << " " << attitudeMatrix._mat[1].x << " " << attitudeMatrix._mat[2].x << " ]" <<
+        "\n[ " << attitudeMatrix._mat[0].y << " " << attitudeMatrix._mat[1].y << " " << attitudeMatrix._mat[2].y << " ]" <<
+        "\n[ " << attitudeMatrix._mat[0].z << " " << attitudeMatrix._mat[1].z << " " << attitudeMatrix._mat[2].z << " ]" <<
+        "\n++++++++++++++++++++++++++++++++";
+
+}
 
 extern "C"{
     void
@@ -188,6 +215,24 @@ extern "C"{
     	((testApp*) ofGetAppPtr())->setIpAddress(nativeString);
 
     }
+
+    void Java_cc_openframeworks_DoubleAgent_OFActivity_updateRotationMatrix( JNIEnv*  env, jobject  thiz,
+                                                                jfloat m00, jfloat m10, jfloat m20, jfloat m30,
+                                                                jfloat m01, jfloat m11, jfloat m21, jfloat m31,
+                                                                jfloat m02, jfloat m12, jfloat m22, jfloat m32,
+                                                                jfloat m03, jfloat m13, jfloat m23, jfloat m33){
+
+
+
+    	 ((testApp*)ofGetAppPtr())->updateRotationMatrix(m00, m10, m20, m30,
+                 m01, m11, m21, m31,
+                  m02, m12, m22, m32,
+                   m03, m13, m23, m33);
+
+
+
+    }
+
 }
 
 //JNIEXPORT void JNICALL Java_cc_openframeworks_androidAccelerometerExample_OFActivity_setIpAddress
