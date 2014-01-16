@@ -47,6 +47,7 @@ public:
 
     // SENSORS
     void updateAccel(ofVec3f newAccel);
+    void updateMatrix(ofMatrix3x3 newMatrix);
 
     // OPENFRAMEWORKS
     void setup();
@@ -81,6 +82,11 @@ private:
     ofVec3f filteredAccel;
     ofVec3f userAccelerationArray[128];
     int accelIndex = 0;  // filter array index
+        //updated sensor
+    ofMatrix3x3 orientation;
+
+    void logMatrix3x3(ofMatrix3x3 matrix);
+    void logMatrix4x4(ofMatrix4x4 matrix);
 
     // STUFF RELATED TO SECRET AGENT
     GameState state;

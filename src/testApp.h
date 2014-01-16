@@ -68,7 +68,15 @@ class testApp : public ofxAndroidApp{
 
 		ofxAndroidVibrator vibrator;
 
+	    ofMatrix3x3 attitude;
+	    ofMatrix3x3 lastAttitude;
+	    ofMatrix3x3 normalized;
+	    void correctNormalization();
+
+		ofMatrix3x3 getInverse(ofMatrix3x3 inputMatrix);
+
 		void logSensorOrientation(ofMatrix4x4 attitudeMatrix);
+		void logSensorOrientation3x3(ofMatrix3x3 attitudeMatrix);
 
 		void oscUpdate();
 

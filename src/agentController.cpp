@@ -370,6 +370,30 @@ void agentController::execute(string gesture){
 
 }
 
+void agentController::logMatrix3x3(ofMatrix3x3 matrix){
+    static int timeIndex;
+    timeIndex++;
+    if(timeIndex % 10 == 0)
+        ofLogNotice("") <<
+        "\n[ " << matrix.a << " " << matrix.b << " " << matrix.c << " ]" <<
+        "\n[ " << matrix.d << " " << matrix.e << " " << matrix.f << " ]" <<
+        "\n[ " << matrix.g << " " << matrix.h << " " << matrix.i << " ]";
+}
+void agentController::logMatrix4x4(ofMatrix4x4 matrix){
+    static int timeIndex;
+    timeIndex++;
+    if(timeIndex % 10 == 0)
+        ofLogNotice("") <<
+        "\n[ " << matrix._mat[0].x << " " << matrix._mat[1].x << " " << matrix._mat[2].x << " ]" <<
+        "\n[ " << matrix._mat[0].y << " " << matrix._mat[1].y << " " << matrix._mat[2].y << " ]" <<
+        "\n[ " << matrix._mat[0].z << " " << matrix._mat[1].z << " " << matrix._mat[2].z << " ]";
+}
+
+
+void agentController::updateMatrix(ofMatrix3x3 newMatrix){
+    logMatrix3x3(newMatrix);
+}
+
 void agentController::updateAccel(ofVec3f newAccel){
 
     if (newAccel.x != accel.x ) {
