@@ -192,7 +192,7 @@ void testApp::updateRotationMatrix(float m00, float m10,float m20,float m30,
         normalized = attitude * lastAttitude;  // results in the identity matrix plus perturbations between polling cycles
         correctNormalization();  // if near 0 or 1, force into 0 and 1
 
-        agent.updateMatrix(normalized);  // send data to game controller
+        agent.updateOrientation(attitude, normalized);  // send data to game controller
 
         lastAttitude = attitude;   // store last polling cycle to compare next time around
         lastAttitude.transpose(); //getInverse(attitude);  // transpose is the same as inverse for orthogonal matrices. and much easier

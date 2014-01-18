@@ -22,7 +22,7 @@
 class testApp : public ofxAndroidApp{
 	
 	public:
-		
+
 //		static testApp& getGlobal()
 //	        {
 //	            static testApp global1;

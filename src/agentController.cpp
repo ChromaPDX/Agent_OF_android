@@ -13,7 +13,7 @@
 
 void agentController::setup() {
 
-	font.loadFont("digital-7.ttf", ofGetWidth() / 4.2, true, true);
+	font.loadFont("digital-7.ttf", ofGetWidth() / 9., true, true);   // 4.2
     spyfont.loadFont("webdings.ttf", ofGetWidth() / 5., true, true);
     fontSmall.loadFont("verdana.ttf", 40, true, true);
     spymess[0] = rand()%127;
@@ -43,7 +43,8 @@ void agentController::updateTCP() {
 	    for(int i = 0; i < server.getLastID(); i++) { // getLastID is UID of all clients
 
             if( server.isClientConnected(i) ) { // check and see if it's still around
-                connectedAgents++;
+                //connectedAgents++;
+                connectedAgents = server.getNumClients() + 1;
 
                 // maybe the client is sending something
                 string str = server.receive(i);
@@ -103,6 +104,12 @@ void agentController::updateTCP() {
             else if (strcmp(mouseButtonState, "notspy") == 0) {
                 isSpy = false;
             }
+            else if (strcmp(mouseButtonState, "SPY CAPTURED!") == 0) {
+                mainMessage = "SPY CAPTURED!";
+            }
+            else if (strcmp(mouseButtonState, "NOPE!") == 0) {
+                mainMessage = "NOPE!";
+            }
             else {
                 bool wasActionMove = false;
                 for (int g = 0; g < NUM_GESTURES; g++) {
@@ -134,7 +141,7 @@ void agentController::updateSlowTCP(){
         oneSecond = ofGetSeconds();
 
         if(isServer){  //  send number of clients
-            sendMessage(ofToString(server.getNumClients()));
+            sendMessage(ofToString(1+server.getNumClients()));
         }
         else if (isClient){
 
@@ -219,7 +226,10 @@ void agentController::countDown(int curstep) {
 // server only function
 void agentController::serveRound(int curstep){
 
+    // initiate round
     if (!curstep) {
+        for(int i = 0; i < NUM_TURNS; i++)
+            previousActions[i] = "";
         step = 0;
         stepInterval = 5000;
         numSteps = NUM_TURNS*3;
@@ -257,7 +267,18 @@ void agentController::serveRound(int curstep){
             recordedTimes[i] = 5000 + i;
         }
 
-        mainMessage = actionString[rand()%(NUM_GESTURES-1) + 1];
+        do {
+            mainMessage = actionString[rand()%(NUM_GESTURES-1) + 1];
+        } while (actionHasOccurred(mainMessage));
+
+        bool placed = false;
+        for(int i = 0; i < NUM_TURNS; i++){
+            if(!placed && strcmp(previousActions[i].c_str(), "") == 0){
+                previousActions[i] = mainMessage;
+                placed = true;
+            }
+        }
+
         //if (isSpy)
             useSpyFont = true;   // everyone begins with scrambled text
         sendMessage(mainMessage);
@@ -285,6 +306,14 @@ void agentController::serveRound(int curstep){
 
         stepInterval = 6000;
     }
+}
+
+bool agentController::actionHasOccurred(string message){
+    for(int i = 0; i < NUM_TURNS; i++){
+        if(strcmp(previousActions[i].c_str(), message.c_str()) == 0)
+            return true;
+    }
+    return false;
 }
 
 // server only function
@@ -362,6 +391,38 @@ void agentController::execute(string gesture){
         recordMode = GameActionSpin;
     }
 
+    else if (strcmp(mess, "LANDSCAPE MODE") == 0) {
+        recordMode = GameActionJump;
+    }
+
+    else if (strcmp(mess, "SET PHONE DOWN") == 0) {
+        recordMode = GameActionJump;
+    }
+
+    else if (strcmp(mess, "PUNCH") == 0) {
+        recordMode = GameActionJump;
+    }
+
+    else if (strcmp(mess, "CROUCH") == 0) {
+        recordMode = GameActionJump;
+    }
+
+    else if (strcmp(mess, "STAND ON 1 LEG") == 0) {
+        recordMode = GameActionJump;
+    }
+
+    else if (strcmp(mess, "TOUCH YOUR NOSE") == 0) {
+        recordMode = GameActionJump;
+    }
+
+    else if (strcmp(mess, "DRAW A CIRCLE") == 0) {
+        recordMode = GameActionJump;
+    }
+
+    else if (strcmp(mess, "RUN IN PLACE") == 0) {
+        recordMode = GameActionJump;
+    }
+
     else {
         recordMode = GameActionFreeze;
     }
@@ -370,19 +431,32 @@ void agentController::execute(string gesture){
 
 }
 
+//void agentController::detectShakeGesture(){
+//
+//}
+
 void agentController::logMatrix3x3(ofMatrix3x3 matrix){
     static int timeIndex;
     timeIndex++;
-    if(timeIndex % 10 == 0)
+    if(timeIndex % 15 == 0){
+        char b, c, d, f, g, h;
+        b = c = d = f = g = h = ' ';
+        if(matrix.b > 0) b = '+'; else if (matrix.b < 0) b = '-';
+        if(matrix.c > 0) c = '+'; else if (matrix.c < 0) c = '-';
+        if(matrix.d > 0) d = '+'; else if (matrix.d < 0) d = '-';
+        if(matrix.f > 0) f = '+'; else if (matrix.f < 0) f = '-';
+        if(matrix.g > 0) g = '+'; else if (matrix.g < 0) g = '-';
+        if(matrix.h > 0) h = '+'; else if (matrix.h < 0) h = '-';
         ofLogNotice("") <<
-        "\n[ " << matrix.a << " " << matrix.b << " " << matrix.c << " ]" <<
-        "\n[ " << matrix.d << " " << matrix.e << " " << matrix.f << " ]" <<
-        "\n[ " << matrix.g << " " << matrix.h << " " << matrix.i << " ]";
+        "\n[ " <<'1'<< " " << b << " " << c << " ]   [ " << matrix.a << " " << matrix.b << " " << matrix.c << " ]" <<
+        "\n[ " << d << " " <<'1'<< " " << f << " ]   [ " << matrix.d << " " << matrix.e << " " << matrix.f << " ]" <<
+        "\n[ " << g << " " << h << " " <<'1'<< " ]   [ " << matrix.g << " " << matrix.h << " " << matrix.i << " ]";
+    }
 }
 void agentController::logMatrix4x4(ofMatrix4x4 matrix){
     static int timeIndex;
     timeIndex++;
-    if(timeIndex % 10 == 0)
+    if(timeIndex % 15 == 0)
         ofLogNotice("") <<
         "\n[ " << matrix._mat[0].x << " " << matrix._mat[1].x << " " << matrix._mat[2].x << " ]" <<
         "\n[ " << matrix._mat[0].y << " " << matrix._mat[1].y << " " << matrix._mat[2].y << " ]" <<
@@ -390,9 +464,12 @@ void agentController::logMatrix4x4(ofMatrix4x4 matrix){
 }
 
 
-void agentController::updateMatrix(ofMatrix3x3 newMatrix){
-    logMatrix3x3(newMatrix);
+void agentController::updateOrientation(ofMatrix3x3 newOrientationMatrix, ofMatrix3x3 newDeltaOrientationMatrix){
+    orientation = newOrientationMatrix;
+    deltaOrientation = newDeltaOrientationMatrix;
+//    logMatrix3x3(deltaOrientation);
 }
+
 
 void agentController::updateAccel(ofVec3f newAccel){
 
@@ -491,15 +568,15 @@ void agentController::draw() {
             angle += 15;
         }
 
-        ofSetColor(50, 50, 50,200);
-        ofBeginShape();
-
-        ofVertex(x*.1,y*.33);
-        ofVertex(x*.9,y*.33);
-        ofVertex(x*.9,y*.66);
-        ofVertex(x*.1,y*.66);
-
-        ofEndShape();
+//        ofSetColor(50, 50, 50,200);
+//        ofBeginShape();
+//
+//        ofVertex(x*.1,y*.33);
+//        ofVertex(x*.9,y*.33);
+//        ofVertex(x*.9,y*.66);
+//        ofVertex(x*.1,y*.66);
+//
+//        ofEndShape();
 
         ofDisableAlphaBlending();
 
@@ -509,11 +586,11 @@ void agentController::draw() {
             ofSetColor(255,255,255);
 
             if (useSpyFont) {
-                if(rand()%2 == 0){
+                //if(rand()%2 == 0){
                     int index = rand()%4;
                     spymess[index] = rand()%127;
-                }
-                font.drawString(ofToString(spymess),ofGetWidth()/2 - font.stringWidth(ofToString(spymess))/2.,ofGetHeight()/2 + font.stringHeight(ofToString(spymess))/2.);
+                //}
+                font.drawString(ofToString(spymess),ofGetWidth()/2 - font.stringWidth(mainMessage)/2.,ofGetHeight()/2 + font.stringHeight(ofToString(spymess))/2.);
             }
 
             else
@@ -607,7 +684,7 @@ void agentController::pickedAgent(int agent) {
 
     if(agent == spyAccordingToServer){
         //sendMessage("agentDiscovered");
-        mainMessage = "GOT HIM!";
+        mainMessage = "SPY CAPTURED!";
         sendMessage(mainMessage);
     }
     else {

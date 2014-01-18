@@ -15,9 +15,9 @@
 
 #define NUM_MSG_STRINGS 20
 #define PORT 3456
-#define NUM_GESTURES 5
+#define NUM_GESTURES 13
 #define NUM_PLACES 8
-#define NUM_TURNS 4  // per round
+#define NUM_TURNS 3  // per round
 
 typedef enum
 {
@@ -47,7 +47,9 @@ public:
 
     // SENSORS
     void updateAccel(ofVec3f newAccel);
-    void updateMatrix(ofMatrix3x3 newMatrix);
+    void updateOrientation(ofMatrix3x3 newOrientationMatrix, ofMatrix3x3 newDeltaOrientationMatrix);
+//    void detectShakeGesture();
+//    bool gestureCompleted;
 
     // OPENFRAMEWORKS
     void setup();
@@ -59,8 +61,6 @@ public:
     void touchBegan(int x, int y, int id);
     void touchMoved(int x, int y, int id);
     void touchEnded(int x, int y, int id);
-
-    ofMatrix4x4 attitudeMatrix;
 
 private:
 
@@ -83,7 +83,8 @@ private:
     ofVec3f userAccelerationArray[128];
     int accelIndex = 0;  // filter array index
         //updated sensor
-    ofMatrix3x3 orientation;
+    ofMatrix3x3 orientation; // device orientation
+    ofMatrix3x3 deltaOrientation;  // change in orientation. at rest, is the identity matrix
 
     void logMatrix3x3(ofMatrix3x3 matrix);
     void logMatrix4x4(ofMatrix4x4 matrix);
@@ -100,9 +101,11 @@ private:
     unsigned long long stepTimer;  // timestamp beginning of a step to offset against
 
     string mainMessage;   // the action command, used for display and orientation within the game loop
-    string placeString[NUM_PLACES] = {"1st","2nd","3rd","4th","5th","6th","7th","8th"};
-    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN"};
+    string placeString[NUM_PLACES] = {"DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT"};//{"1st","2nd","3rd","4th","5th","6th","7th","8th"};
+    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN","LANDSCAPE MODE","SET PHONE DOWN","PUNCH","CROUCH","STAND ON 1 LEG","TOUCH YOUR NOSE","DRAW A CIRCLE","RUN IN PLACE"};
     char spymess[4];  // scrambled text
+    bool actionHasOccurred(string message);     // prevent repeating actions per round
+    string previousActions[NUM_TURNS];  // prevent repeating actions per round, history of moves. gets cleared every round start
 
     unsigned long long turnTime; //elapsed;  // beginning of each turn. for calculating reaction time
     unsigned long long recordedTimes[16];  // index [0] is always for self. server utilizes all the rest of the indexes, correlates to clientID
