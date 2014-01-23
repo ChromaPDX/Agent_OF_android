@@ -16,6 +16,9 @@ void testApp::setup(){
 
 	ofSetLineWidth(10);
 	ofBackground(0,0,0);
+
+	agent.setup();
+
 	// listen on the given port
 
 	JNIEnv *env;
@@ -45,7 +48,6 @@ void testApp::setup(){
 
 	lastAttitude = ofMatrix3x3(1,0,0,  0,1,0,  0,0,1);
 
-	agent.setup();
 	//sender.setup("192.168.1.255", 1234);
 
 }
@@ -55,7 +57,7 @@ void testApp::update(){
 
 	//ofLogNotice("UPDATE") << "updating . . .";
 
-	agent.updateAccel(ofxAccelerometer.getForce());
+	//agent.updateAccel(ofxAccelerometer.getForce());
 
 	agent.update();
 
@@ -167,6 +169,8 @@ void testApp::cancelPressed(){
 
 void testApp::setIpAddress(const char* ipAddress){
 
+	ofLogNotice("SETUP") << "setIPAddress call";
+
 	agent.setIpAddress(ipAddress);
 
 	//oscDest = new string((const char*)broadcast);
@@ -186,8 +190,8 @@ void testApp::updateRotationMatrix(float m00, float m10,float m20,float m30,
 //              m03, m13, m23, 1.);
 
         attitude = ofMatrix3x3(m00, m10, m20,
-        		-m02, -m12, -m22,
-        		m01, m11, m21);
+        		m01, m11, m21,
+        		m02, m12, m22);
 
         normalized = attitude * lastAttitude;  // results in the identity matrix plus perturbations between polling cycles
         correctNormalization();  // if near 0 or 1, force into 0 and 1

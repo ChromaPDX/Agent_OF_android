@@ -22,11 +22,22 @@
 typedef enum
 {
 	GameStateWaitingForSignIn,
+    GameStateReadyRoom,
 	GameStatePlaying,
     GameStateDeciding,
 	GameStateGameOver
 }
 GameState;
+
+typedef enum
+{
+    TurnStateNotActive,
+    TurnStateReceivingScrambled,
+    TurnStateAction,
+    TurnStateActionSuccess,
+    TurnStateWaiting
+}
+TurnState;
 
 typedef enum
 {
@@ -90,7 +101,8 @@ private:
     void logMatrix4x4(ofMatrix4x4 matrix);
 
     // STUFF RELATED TO SECRET AGENT
-    GameState state;
+    GameState gameState;
+    TurnState turnState;
     typedef void (*StepFunctionPtr)(int);
     void (agentController::*stepFunction)(int);
     void countDown(int curstep);  // can be stepFunction
@@ -102,8 +114,9 @@ private:
 
     string mainMessage;   // the action command, used for display and orientation within the game loop
     string placeString[NUM_PLACES] = {"DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT"};//{"1st","2nd","3rd","4th","5th","6th","7th","8th"};
-    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN","LANDSCAPE MODE","SET PHONE DOWN","PUNCH","CROUCH","STAND ON 1 LEG","TOUCH YOUR NOSE","DRAW A CIRCLE","RUN IN PLACE"};
-    char spymess[4];  // scrambled text
+    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN","LANDSCAPE\nMODE","SET PHONE\nFACE DOWN","PUNCH","CROUCH","STAND ON\nONE LEG","TOUCH YOUR\nNOSE","DRAW A\nCIRCLE","RUN IN PLACE"};
+    string connectedAgentsStrings[NUM_PLACES] = {"", ".", ". .", ". . .", ". . . .", ". . . . .", ". . . . . .", ". . . . . . ."};
+    char spymess[5];  // scrambled text
     bool actionHasOccurred(string message);     // prevent repeating actions per round
     string previousActions[NUM_TURNS];  // prevent repeating actions per round, history of moves. gets cleared every round start
 
@@ -112,7 +125,9 @@ private:
 
     int recordMode;  // GameAction type   // is 0 being used properly?
     bool isSpy;    // set when client receives "spy" or "notspy"
-    bool useSpyFont;    // dynamically switches on DAs phone, represents scrambled text or unscrambled
+    bool useScrambledText;    // (true: display spyMess, false: mainMessage) dynamically switches on DAs phone, and everybody elses, remains true on DAs phone during execute function
+    bool animatedScrambleFont;    // turns to false on everybody's phone the moment the execute function happens
+    bool preGameCountdownSequence;
     int pickerAccordingToServer;
     int spyAccordingToServer;
 
@@ -123,12 +138,22 @@ private:
 
     // OF / UI / UX
     int mouseX, mouseY;
+    int centerX, centerY;  // screen Coords
     char mouseButtonState[128];
     ofTrueTypeFont font;
     ofTrueTypeFont spyfont;
     ofTrueTypeFont fontSmall;
+    ofTrueTypeFont fontMedium;
     ofSpherePrimitive sphere;
-    void drawAnimatedBackground();
+    ofImage reticleCompass;
+    ofImage reticleOutline;
+    ofImage reticleInside;
+    ofImage fingerPrint;
+    ofImage insideCircle;
+    string lowerTextLine1, lowerTextLine2, lowerTextLine3;
+
+    void drawAnimatedSphereBackground();
+    void drawInGameBackground();
 };
 
 #endif /* defined(__DoubleAgent__agentController__) */
