@@ -13,9 +13,7 @@
 
 void agentController::setup() {
 
-    //	font.loadFont("digital-7.ttf", ofGetWidth() / 9., true, true);   // 4.2
     font.loadFont("Avenir.ttf", ofGetWidth() / 12., true, true);   // 4.2
-    spyfont.loadFont("webdings.ttf", ofGetWidth() / 5., true, true);
     fontSmall.loadFont("AvenirNextCondensed.ttf", 24, true, true);
     fontMedium.loadFont("AvenirNextCondensed.ttf", 36, true, true);
     spymess[0] = rand()%23+65;
@@ -23,11 +21,14 @@ void agentController::setup() {
     spymess[2] = rand()%23+65;
     spymess[3] = rand()%23+65;
     spymess[4] = NULL;
-    //	font.setLetterSpacing(1.037);
+    font.setLetterSpacing(.9);
+    fontSmall.setLetterSpacing(.9);
+    fontMedium.setLetterSpacing(.9);
 
     //    elapsed = ofGetElapsedTimeMillis();
     gameState = GameStateWaitingForSignIn;                                                                                  // gameState  :  waiting
     turnState = TurnStateNotActive;                                                                                         // turnState  :  not active
+    currentTurn = 0;
     ofLogNotice("+++ GameState updated:") << "Waiting For Sign In, setup()";
 
     sphere.setRadius( ofGetWidth()  );
@@ -39,7 +40,7 @@ void agentController::setup() {
     reticleCompass.setAnchorPercent(.5, .5);
     fingerPrint.loadImage("fingerprint.png");
     fingerPrint.setAnchorPercent(.5, .5);
-    insideCircle.loadImage("inside_circle.png");
+    insideCircle.loadImage("inside_circle_w_fade.png");
     insideCircle.setAnchorPercent(.5, .5);
     reticleInside.loadImage("reticle_inside.png");
     reticleInside.setAnchorPercent(0, 0);
@@ -109,12 +110,14 @@ void agentController::updateTCP() {
                 //execute(mainMessage);
                 mainMessage = "OPERATIVE I.D.";  // "PICK"
                 gameState = GameStateDeciding;                                                                                  // gameState  :  deciding
+                turnState = TurnStateNotActive;                                                                                  // turnState  :  not active
             }
             else if (strcmp(mouseButtonState, "PICK") == 0) {
                 ((testApp*) ofGetAppPtr())->vibrate(true);
                 //execute(mainMessage);
                 mainMessage = "OPERATIVE I.D.";  // "AGENT"
                 gameState = GameStateDeciding;                                                                                  // gameState  :  deciding
+                turnState = TurnStateNotActive;                                                                                  // turnState  :  not active
             }
             else if (strcmp(mouseButtonState, "spy") == 0) {
                 isSpy = true;
@@ -145,6 +148,7 @@ void agentController::updateTCP() {
                         mainMessage = str;
                         wasTurnRelated = true;
                         turnState = TurnStateReceivingScrambled;                                                                // turnState  :  scrambled    (client)
+                        currentTurn++;
                     }
                 }
                 for (int g = 0; g < NUM_PLACES; g++) {
@@ -205,7 +209,7 @@ void agentController::countDown(int curstep) {
         stepTimer = ofGetElapsedTimeMillis();
         preGameCountdownSequence = true;
         stepFunction = &agentController::countDown;
-
+        currentTurn = 0;
         return;
     }
 
@@ -288,6 +292,7 @@ void agentController::serveRound(int curstep){
 	    }
         stepInterval = 0;
         gameState = GameStateDeciding;                                                                                      // gameState  :  deciding
+        turnState = TurnStateNotActive;
     }
 
     else if (curstep %3 == 0) { // MESSAGE
@@ -315,6 +320,7 @@ void agentController::serveRound(int curstep){
         ((testApp*) ofGetAppPtr())->vibrate(true);
         turnState = TurnStateReceivingScrambled;                                                                            // turnState  :  scrambled       (server)
         stepInterval = 1000 + rand() % 3000;
+        currentTurn++;
     }
     else if (curstep%3 == 1) { // EXCECUTE
 
@@ -322,7 +328,7 @@ void agentController::serveRound(int curstep){
 
         //        ((testApp*) ofGetAppPtr())->vibrate(true);
 
-        stepInterval = 3000;
+        stepInterval = ACTION_TIME;
 
         execute(mainMessage);
     }
@@ -396,11 +402,14 @@ void agentController::countScores(){
 void agentController::execute(string gesture){
 
     turnState = TurnStateAction;                                                                                            // turnState  :  action
-
     animatedScrambleFont = false;
     if(!isSpy){
         useScrambledText = false;
     }
+
+    // clear recorded sensor array before every turn  // TODO separate between events which need recording and those which don't
+    for(int i = 0; i < SENSOR_DATA_ARRAY_SIZE; i++)
+        recordedSensorData[i] = 1.;
 
     ofLogNotice("RECORD MODE") << "RECORDING: " + gesture;
 
@@ -600,30 +609,64 @@ void agentController::draw() {
             drawInGameBackground();
 
             //ofSetColor(6, 179, 210);   // light blue motion shape
-
             ofSetLineWidth(3.);
-            ofNoFill();
-            if(turnState == TurnStateReceivingScrambled || turnState == TurnStateAction || gameState == GameStateDeciding)
-                ofSetColor(195, 17, 134);   // pink
-            else
-                ofSetColor(10, 223, 255, 255);   // light blue
-            ofBeginShape();
-            float outerRadius = centerX*.52;
-            int resolution = 64;
-            float deltaAngle = TWO_PI / (float)resolution;
-            float angle = 0;
-            for(int i = 0; i <= resolution; i++){
-                float x = centerX + outerRadius * cos(angle);
-                float y = centerY + outerRadius * sin(angle);
-                ofVertex(x,y);
-                angle += deltaAngle;
+
+            // for drawing a circle path
+            float outerRadius;
+            int resolution;
+            float deltaAngle;
+            float angle;
+
+            if(turnState == TurnStateAction || turnState == TurnStateActionSuccess || turnState == TurnStateWaiting){
+                ofSetColor(6, 140, 210, 100);   // blue motion shape
+                //ofSetColor(74,193,255, 50); // blue motion shape border
+                ofFill();
+                ofBeginShape();
+                outerRadius = centerX*.55;
+                deltaAngle = TWO_PI / (float)SENSOR_DATA_ARRAY_SIZE;
+                angle = 0;
+                float turnProgress = (float)(ofGetElapsedTimeMillis() - turnTime) / ACTION_TIME;   // from 0 to 1
+                for(int i = 0; i < SENSOR_DATA_ARRAY_SIZE; i++){
+                    if((float)i/SENSOR_DATA_ARRAY_SIZE < turnProgress){
+                        float x = centerX + outerRadius * sin(angle) * recordedSensorData[i];
+                        float y = centerY + outerRadius * -cos(angle) * recordedSensorData[i];
+                        ofVertex(x,y);
+                        angle += deltaAngle;
+                    }
+                }
+                ofEndShape();
+
             }
-            ofEndShape();
+            ofSetColor(255, 255, 255,255);
 
+            insideCircle.draw(centerX, centerY);
+            if(gameState == GameStateDeciding){
+                ofSetColor(195, 17, 134);
+                fingerPrint.draw(centerX, centerY,insideCircle.width*.5, insideCircle.height*.5);
+            }
 
-
-            if(gameState == GameStateDeciding)
-                fingerPrint.draw(centerX, centerY,insideCircle.width*.75, insideCircle.height*.75);
+            if (( gameState == GameStatePlaying && !preGameCountdownSequence ) || gameState == GameStateDeciding || gameState == GameStateGameOver){
+                ofNoFill();
+                if(turnState == TurnStateReceivingScrambled || turnState == TurnStateAction || gameState == GameStateDeciding)
+                    ofSetColor(195, 17, 134);   // pink
+                else
+                    ofSetColor(10, 223, 255, 255);   // light blue
+                ofBeginShape();
+                outerRadius = centerX*.52;
+                resolution = 64;
+                deltaAngle = TWO_PI / (float)resolution;
+                angle = 0;
+                float roundProgress = (float)currentTurn / NUM_TURNS;
+                for(int i = 0; i <= resolution; i++){
+                    if((float)i/resolution <= roundProgress){
+                        float x = centerX + outerRadius * sin(angle);
+                        float y = centerY + outerRadius * -cos(angle);
+                        ofVertex(x,y);
+                        angle += deltaAngle;
+                    }
+                }
+                ofEndShape();
+            }
 
             ofDisableAlphaBlending();
 
@@ -654,8 +697,8 @@ void agentController::draw() {
     }
     if(gameState == GameStateWaitingForSignIn){
         lowerTextLine1 = "SEARCHING";
-        lowerTextLine2 = "NEARBY HOSTS";
-        lowerTextLine3 = "Nothing yet..";
+        lowerTextLine2 = "NO ANDROID HOSTS";
+        lowerTextLine3 = "Hard-reset Double Agent when a host exists";
     }
     if(gameState == GameStateReadyRoom){
         lowerTextLine1 = "CONNECTED";
@@ -747,7 +790,6 @@ void agentController::drawInGameBackground(){
     ofRotate(reticleInsideAngle*180/PI);
     reticleInside.draw(0, 0);
     ofPopMatrix();
-    insideCircle.draw(centerX, centerY);
 }
 
 void agentController::drawAnimatedSphereBackground() {
@@ -771,12 +813,32 @@ void agentController::drawAnimatedSphereBackground() {
 
 #pragma mark - LOGIC
 
+float agentController::getMaxSensorScale(){
+    float max = 0.;
+    if(fabs(deltaOrientation.b) > max) max = fabs(deltaOrientation.b);
+    if(fabs(deltaOrientation.c) > max) max = fabs(deltaOrientation.c);
+    if(fabs(deltaOrientation.d) > max) max = fabs(deltaOrientation.d);
+    if(fabs(deltaOrientation.f) > max) max = fabs(deltaOrientation.f);
+    if(fabs(deltaOrientation.g) > max) max = fabs(deltaOrientation.g);
+    if(fabs(deltaOrientation.h) > max) max = fabs(deltaOrientation.h);
+    return max;
+}
+
 void agentController::update() {
 
     if (isClient || isServer) {
 
       	updateTCP();
         updateSlowTCP();
+
+        if(turnState == TurnStateAction){
+            float turnProgress = (float)(ofGetElapsedTimeMillis() - turnTime) / ACTION_TIME;   // from 0 to 1
+            int index = SENSOR_DATA_ARRAY_SIZE*turnProgress;
+            if(index < 0) index = 0;
+            if(index >= SENSOR_DATA_ARRAY_SIZE) index = SENSOR_DATA_ARRAY_SIZE-1;
+            float maxScale = 4*getMaxSensorScale() + 1.;
+            recordedSensorData[index] = maxScale;
+        }
 
         if(gameState == GameStateGameOver){
             if (ofGetElapsedTimeMillis() - stepTimer > stepInterval ){

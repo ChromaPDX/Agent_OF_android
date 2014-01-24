@@ -18,6 +18,8 @@
 #define NUM_GESTURES 13
 #define NUM_PLACES 8
 #define NUM_TURNS 3  // per round
+#define ACTION_TIME 3000  // 3 seconds to execute action
+#define SENSOR_DATA_ARRAY_SIZE 128
 
 typedef enum
 {
@@ -91,8 +93,10 @@ private:
     // SENSORS
 	ofVec3f accel, normAccel;
     ofVec3f filteredAccel;
-    ofVec3f userAccelerationArray[128];
+    ofVec3f userAccelerationArray[SENSOR_DATA_ARRAY_SIZE];
+    float recordedSensorData[SENSOR_DATA_ARRAY_SIZE];
     int accelIndex = 0;  // filter array index
+    float getMaxSensorScale(); // grab max value from deltaOrientation;
         //updated sensor
     ofMatrix3x3 orientation; // device orientation
     ofMatrix3x3 deltaOrientation;  // change in orientation. at rest, is the identity matrix
@@ -109,6 +113,7 @@ private:
     void serveRound(int curstep); // can be stepFunction   (server only function)
     int step;  // game loop interval. used for countdowns and rounds, increments to 3 for countdown, increments to TURNS*3 for rounds
     int numSteps;  // sets the ceiling of each countdown and round. 3 for countdowns, TURNS*3 for rounds
+    int currentTurn;   // resets to 0 each new round
     unsigned long stepInterval;  // period between a step
     unsigned long long stepTimer;  // timestamp beginning of a step to offset against
 
@@ -141,7 +146,6 @@ private:
     int centerX, centerY;  // screen Coords
     char mouseButtonState[128];
     ofTrueTypeFont font;
-    ofTrueTypeFont spyfont;
     ofTrueTypeFont fontSmall;
     ofTrueTypeFont fontMedium;
     ofSpherePrimitive sphere;

@@ -132,18 +132,17 @@ void testApp::swipe(ofxAndroidSwipeDir swipeDir, int id){
 
 //--------------------------------------------------------------
 void testApp::pause(){
-	agent.pause();
+	ofLogNotice("PROGRAM:") << " pause(), executing agent.exit()";
+	agent.exit();
 }
 
 //--------------------------------------------------------------
 void testApp::stop(){
-
-
-
 }
 
 //--------------------------------------------------------------
 void testApp::resume(){
+	ofLogNotice("PROGRAM:") << " resume()";
 	agent.resume();
 }
 
