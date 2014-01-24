@@ -417,11 +417,11 @@ void agentController::execute(string gesture){
 
     strcpy(mess, gesture.c_str());
 
-    if (strcmp(mess, "TOUCH") == 0) {
+    if (strcmp(mess, "TOUCH SCREEN") == 0) {
         recordMode = GameActionTouch;
     }
 
-    else if (strcmp(mess, "SHAKE") == 0) {
+    else if (strcmp(mess, "SHAKE PHONE") == 0) {
         recordMode = GameActionShake;
     }
 
@@ -433,15 +433,15 @@ void agentController::execute(string gesture){
         recordMode = GameActionSpin;
     }
 
-    else if (strcmp(mess, "LANDSCAPE\nMODE") == 0) {
+    else if (strcmp(mess, "HIGH FIVE\nNEIGHBOR") == 0) {
         recordMode = GameActionJump;
     }
 
-    else if (strcmp(mess, "SET PHONE\nFACE DOWN") == 0) {
+    else if (strcmp(mess, "POINT AT\nAN AGENT") == 0) {
         recordMode = GameActionJump;
     }
 
-    else if (strcmp(mess, "PUNCH") == 0) {
+    else if (strcmp(mess, "FREEZE") == 0) {
         recordMode = GameActionJump;
     }
 
@@ -457,7 +457,7 @@ void agentController::execute(string gesture){
         recordMode = GameActionJump;
     }
 
-    else if (strcmp(mess, "DRAW A\nCIRCLE") == 0) {
+    else if (strcmp(mess, "RAISE\nA HAND") == 0) {
         recordMode = GameActionJump;
     }
 
@@ -578,9 +578,9 @@ void agentController::draw() {
             fade = 255. * (1 - (float)(ofGetElapsedTimeMillis() - stepTimer) / stepInterval );
         ofSetColor(255, 255, 255, fade);
         if(step >= 1 && step < 8)
-            fontMedium.drawString("one of you has been turned\nagainst us. to purge the\ndouble agent, HQ will dispatch\n3 commands for all to\nexecute simultaneously.", 20, centerY-100);
+            fontMedium.drawString("MESSAGE FROM HQ:\n\nWe have a detected\na double agent in your\nmidst. HQ will send\nthree encrypted commands\nfor all agents to\nenact simultaneously.", 20, centerY-200);
         else if(step >= 9 && step < 16)
-            fontMedium.drawString("the double agent will\nonly intercept scrambled\ncommands. it is up to them\nto fake it by watching\ntheir fellow agents.", 20, centerY-100);
+            fontMedium.drawString("The double agent will\nonly receive scrambled\ncommands and will attempt\nto mimic the movements\nof the other agents.\nWatch your team closely!\n\nEND OF MESSAGE", 20, centerY-200);
     }
 
     if (gameState == GameStatePlaying || gameState == GameStateDeciding || gameState == GameStateGameOver) {

@@ -119,7 +119,7 @@ private:
 
     string mainMessage;   // the action command, used for display and orientation within the game loop
     string placeString[NUM_PLACES] = {"DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT"};//{"1st","2nd","3rd","4th","5th","6th","7th","8th"};
-    string actionString[NUM_GESTURES] = {"FREEZE","JUMP","TOUCH","SHAKE","SPIN","LANDSCAPE\nMODE","SET PHONE\nFACE DOWN","PUNCH","CROUCH","STAND ON\nONE LEG","TOUCH YOUR\nNOSE","DRAW A\nCIRCLE","RUN IN PLACE"};
+    string actionString[NUM_GESTURES] = {"NOTHING","JUMP","TOUCH SCREEN","SHAKE PHONE","SPIN","HIGH FIVE\nNEIGHBOR","POINT AT\nAN AGENT","FREEZE","CROUCH","STAND ON\nONE LEG","TOUCH YOUR\nNOSE","RAISE\nA HAND","RUN IN PLACE"};
     string connectedAgentsStrings[NUM_PLACES] = {"", ".", ". .", ". . .", ". . . .", ". . . . .", ". . . . . .", ". . . . . . ."};
     char spymess[5];  // scrambled text
     bool actionHasOccurred(string message);     // prevent repeating actions per round
