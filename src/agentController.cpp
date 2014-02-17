@@ -26,7 +26,7 @@ void agentController::setup() {
     fontMedium.setLetterSpacing(.9);
 
     //    elapsed = ofGetElapsedTimeMillis();
-    gameState = GameStateWaitingForSignIn;                                                                                  // gameState  :  waiting
+    gameState = GameStateLogin;                                                                                  // gameState  :  waiting
     turnState = TurnStateNotActive;                                                                                         // turnState  :  not active
     currentTurn = 0;
     ofLogNotice("+++ GameState updated:") << "Waiting For Sign In, setup()";
@@ -46,6 +46,13 @@ void agentController::setup() {
     reticleInside.setAnchorPercent(0, 0);
     reticleInside.crop(reticleInside.width/2., reticleInside.height/2., reticleInside.width/2., reticleInside.height/2.);
 
+    increment.loadImage("increment.png");
+    increment.setAnchorPercent(.5, .5);
+    decrement.loadImage("decrement.png");
+    decrement.setAnchorPercent(.5, .5);
+
+    width = ofGetWidth();
+    height = ofGetHeight();
     centerX = ofGetWidth()/2.;
     centerY = ofGetHeight()/2.;
 
@@ -58,12 +65,12 @@ void agentController::updateTCP() {
 
 	if (isServer){
 
-        connectedAgents = server.getNumClients() + 1;
+        connectedAgents = 1;
 
 	    for(int i = 0; i < server.getLastID(); i++) { // getLastID is UID of all clients
 
             if( server.isClientConnected(i) ) { // check and see if it's still around
-                //connectedAgents++;
+                connectedAgents++;
 
                 // maybe the client is sending something
                 string str = server.receive(i);
@@ -561,16 +568,130 @@ void agentController::updateAccel(ofVec3f newAccel){
 }
 
 
+
+string paddedString(int num){
+    if (num >= 100){
+        return ofToString(num);
+    }
+    else if (num >= 10){
+        return "0" + ofToString(num);
+    }
+    else {
+        return "00" + ofToString(num);
+    }
+}
+
 #pragma mark - DRAW
+
+void agentController::drawLoginScreen() {
+
+    string hostString = "HOST";
+    string clientString = "JOIN";
+    string backString = "< BACK";
+    string thirdString;
+
+    ofSetColor(255,255,255);
+
+    switch (loginState) {
+        case LoginStateChoose:
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.4 - font.stringHeight(hostString)/2.);
+            font.drawString(clientString,ofGetWidth()/2 - font.stringWidth(clientString)/2.,ofGetHeight()*.6 - font.stringHeight(clientString)/2.);
+            break;
+
+        case LoginStateServer:
+
+
+            hostString = "JOIN CODE";
+            clientString = getCodeFromIp();
+
+            fontMedium.drawString(backString,fontMedium.stringWidth(backString)*.35,ofGetHeight()*.1 - fontMedium.stringHeight(backString)/2.);
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.4 - font.stringHeight(hostString)/2.);
+            font.drawString(clientString,ofGetWidth()/2 - font.stringWidth(clientString)/2.,ofGetHeight()*.6 - font.stringHeight(clientString)/2.);
+
+
+            break;
+
+        case LoginStateClient:
+
+
+            hostString = "CODE";
+            clientString = getCodeFromInt(loginCode);
+
+            fontMedium.drawString(backString,fontMedium.stringWidth(backString)*.35,ofGetHeight()*.1 - fontMedium.stringHeight(backString)/2.);
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.2 - font.stringHeight(hostString)/2.);
+            font.drawString(clientString,ofGetWidth()/2 - font.stringWidth(clientString)/2.,ofGetHeight()*.475 - font.stringHeight(clientString)/2.);
+
+            increment.draw(width*.31, height*.325, width*.1, width*.1);
+            increment.draw(width*.5, height*.325, width*.1, width*.1);
+            increment.draw(width*.7, height*.325, width*.1, width*.1);
+
+            decrement.draw(width*.31, height*.525, width*.1, width*.1);
+            decrement.draw(width*.5, height*.525, width*.1, width*.1);
+            decrement.draw(width*.7, height*.525, width*.1, width*.1);
+
+            hostString = "JOIN";
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.75 - font.stringHeight(hostString)/2.);
+
+
+            break;
+
+        case LoginStateConnecting:
+
+            hostString = "CONNECTING TO";
+            clientString = getCodeFromInt(loginCode);
+
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.4 - font.stringHeight(hostString)/2.);
+            font.drawString(clientString,ofGetWidth()/2 - font.stringWidth(clientString)/2.,ofGetHeight()*.6 - font.stringHeight(clientString)/2.);
+
+
+            break;
+
+        case LoginStateFailed:
+
+            hostString = "BACK";
+            clientString = "CONNECTION";
+            thirdString = "FAILED";
+
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.15 - font.stringHeight(hostString)/2.);
+            font.drawString(clientString,ofGetWidth()/2 - font.stringWidth(clientString)/2.,ofGetHeight()*.5 - font.stringHeight(clientString)/2.);
+            font.drawString(thirdString,ofGetWidth()/2 - font.stringWidth(thirdString)/2.,ofGetHeight()*.6 - font.stringHeight(thirdString)/2.);
+
+            break;
+
+        case LoginStateNoIP:
+
+
+            hostString = "NO ADDRESS";
+            clientString = "CHECK WIFI ?";
+
+            fontMedium.drawString(backString,fontMedium.stringWidth(backString)*.35,ofGetHeight()*.1 - fontMedium.stringHeight(backString)/2.);
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.4 - font.stringHeight(hostString)/2.);
+            font.drawString(clientString,ofGetWidth()/2 - font.stringWidth(clientString)/2.,ofGetHeight()*.6 - font.stringHeight(clientString)/2.);
+
+
+            break;
+
+
+        default:
+            break;
+    }
+
+}
 
 void agentController::draw() {
 
     ofClear(30, 30, 30);
-    if(gameState == GameStateWaitingForSignIn){
+    if(gameState == GameStateLogin){
         drawAnimatedSphereBackground();
     }
     else if(gameState == GameStateReadyRoom){
         drawAnimatedSphereBackground();
+
+
+
+        string backString = "< BACK";
+        fontMedium.drawString(backString,fontMedium.stringWidth(backString)*.35,ofGetHeight()*.1 - fontMedium.stringHeight(backString)/2.);
+
         float fade = 255;
         if(step == 1 || step == 9)
             fade = 255. * (float)(ofGetElapsedTimeMillis() - stepTimer) / stepInterval;
@@ -581,6 +702,20 @@ void agentController::draw() {
             fontMedium.drawString("MESSAGE FROM HQ:\n\nWe have a detected\na double agent in your\nmidst. HQ will send\nthree encrypted commands\nfor all agents to\nenact simultaneously.", 20, centerY-200);
         else if(step >= 9 && step < 16)
             fontMedium.drawString("The double agent will\nonly receive scrambled\ncommands and will attempt\nto mimic the movements\nof the other agents.\nWatch your team closely!\n\nEND OF MESSAGE", 20, centerY-200);
+
+        if (isServer){
+        ofSetColor(255);
+
+
+                string hostString = "JOIN CODE";
+                string clientString = getCodeFromIp();
+                fontMedium.drawString(hostString,width*.75 - fontMedium.stringWidth(hostString)/2.,ofGetHeight()*.1 - fontMedium.stringHeight(hostString)/2.);
+                font.drawString(clientString,width*.5 - font.stringWidth(clientString)/2.,ofGetHeight()*.25 - font.stringHeight(clientString)/2.);
+
+
+        backString = "START";
+        fontMedium.drawString(backString,width*.5 - fontMedium.stringWidth(backString)*.5,height*.75 - fontMedium.stringHeight(backString)/2.);
+        }
     }
 
     if (gameState == GameStatePlaying || gameState == GameStateDeciding || gameState == GameStateGameOver) {
@@ -690,21 +825,32 @@ void agentController::draw() {
             }
         }
     }
+
     if (!isServer && !isClient) {  // if not server or client
-        mainMessage = "NO LINK";
-        ofSetColor(255,255,255);
-        font.drawString(mainMessage,ofGetWidth()/2 - font.stringWidth(mainMessage)/2.,ofGetHeight()/2 + font.stringHeight(mainMessage)/2.);
+
+        drawLoginScreen();
+
     }
-    if(gameState == GameStateWaitingForSignIn){
-        lowerTextLine1 = "SEARCHING";
-        lowerTextLine2 = "NO ANDROID HOSTS";
-        lowerTextLine3 = "Hard-reset Double Agent when a host exists";
+
+    if(gameState == GameStateLogin){
+        lowerTextLine1 = "INTEL WELCOMES YOU TO";
+        lowerTextLine2 = "DOUBLE AGENT";
+        lowerTextLine3 = "Please host or join a game";
     }
+
     if(gameState == GameStateReadyRoom){
-        lowerTextLine1 = "CONNECTED";
-        lowerTextLine2 = "READY ROOM";
-        lowerTextLine3 = "Waiting for the stragglers";
+        if (isServer) {
+            lowerTextLine1 = "YOU ARE THE HOST";
+            lowerTextLine2 = getCodeFromIp();
+            lowerTextLine3 = "Share this code for others to log in";
+        }
+        else {
+            lowerTextLine1 = "YOU ARE CONNECTED";
+            lowerTextLine2 = "to host: " + getCodeFromInt(loginCode);
+            lowerTextLine3 = "Waiting for host to start the game";
+        }
     }
+
     if(gameState == GameStatePlaying){
         if(preGameCountdownSequence){
             if(step > 6){
@@ -746,7 +892,7 @@ void agentController::draw() {
     fontSmall.drawString(lowerTextLine3, 60, centerY+centerY*.66+80);
 
 
-    if (connectedAgents){   // CONNECTED AGENTS
+    if (connectedAgents > 1){   // CONNECTED AGENTS
         string count = connectedAgentsStrings[connectedAgents];//ofToString(connectedAgents);
         ofSetColor(200,200,200);
         font.drawString(count, centerX-font.stringWidth(count)/2.,ofGetHeight() - font.stringHeight(count));
@@ -945,13 +1091,148 @@ void agentController::startGame(){
 void agentController::touchBegan(int x, int y, int id){
 
     switch (gameState) {
-            //        case GameStateWaitingForSignIn:
-        case GameStateReadyRoom:
-            if (isServer) {
-                sendMessage("startGame");
-                //sleep(250);
-                startGame();
+        case GameStateLogin:
+
+            switch (loginState) {
+
+                case LoginStateChoose:
+
+                    if (y < centerY) {
+
+                        int con = serverConnect();
+
+                        if (con == -1){
+                            loginState = LoginStateNoIP;
+                            ofLogNotice("choose screen") << "no ip";
+                        }
+                        else if (con == 0) {
+                            loginState = LoginStateFailed;
+                        }
+                        else {
+                            ofLogNotice("chose server") << "yes!";
+                             //loginState = LoginStateServer;
+
+                            isServer = true;
+                            gameState = GameStateReadyRoom;
+                            stepInterval = 1000;
+                            step = 0;
+                            stepTimer = ofGetElapsedTimeMillis();
+
+                        }
+
+                    }
+                    else {
+                        loginState = LoginStateClient;
+                    }
+                    break;
+
+                case LoginStateServer:
+
+
+                    break;
+
+                case LoginStateClient:
+
+                    if (y < height * .2) {
+                        loginState = LoginStateChoose;
+                    }
+
+                    else if (y < height * .65){
+
+                        if (x < width * .4) {
+
+                            if (y < height * .5) { // inc 100's
+                                loginCode >= 200 ? loginCode -= 200 : loginCode += 100;
+                            }
+                            else {
+                                loginCode < 100 ? loginCode += 200 : loginCode -= 100;
+                            }
+                        }
+
+                        else if (x > width *.4 && x < width * .6){
+
+                             int tens = loginCode - ((loginCode / 100) * 100);
+
+                            if (y < height * .5) { // inc 100's
+                                tens >= 90 ? loginCode -= 90 : loginCode += 10;
+                            }
+                            else {
+                                tens < 10 ? loginCode += 90 : loginCode -= 10;
+                            }
+
+                        }
+                        else if (x > width * .6){
+
+                            int tens = loginCode - ((loginCode / 100) * 100);
+                            int ones = tens - ((tens / 10) * 10);
+
+                            if (y < height * .5) { // inc 100's
+                                ones >= 9 ? loginCode -= 9 : loginCode += 1;
+                            }
+                            else {
+                                ones < 1 ? loginCode += 9 : loginCode -= 1;
+                            }
+
+                        }
+
+                    }
+
+                    else {
+
+                        int con = clientConnect();
+
+                        if (con == 0) {
+                            loginState = LoginStateFailed;
+                        }
+                        else if (con == -1){
+                            loginState = LoginStateNoIP;
+                        }
+                        else {
+                            isClient = true;
+                            gameState = GameStateReadyRoom;                                                                            // gameState  :  connected
+                            ofLogNotice("+++ GameState updated:") << "Ready Room, setIPAddress()";
+                            stepInterval = 1000;
+                            step = 0;
+                            stepTimer = ofGetElapsedTimeMillis();
+                        }
+                    }
+
+                    break;
+
+                case LoginStateConnecting:
+
+                    break;
+
+                case LoginStateFailed: case LoginStateNoIP:
+
+                    loginState = LoginStateChoose;
+
+                    break;
+
+
+
+                default:
+                    break;
             }
+            break;
+
+        case GameStateReadyRoom:
+
+            if (isServer) {
+
+                if (y < height * .2) {
+                    gameState = GameStateLogin;
+                    loginState = LoginStateChoose;
+                    server.close();
+                    isServer = 0;
+                }
+                else if (connectedAgents > 1){
+                    sendMessage("startGame");
+                    //sleep(250);
+                    startGame();
+                }
+            }
+
             break;
         case GameStatePlaying:
             if (recordMode == GameActionTouch) {
@@ -1010,76 +1291,10 @@ void agentController::setIpAddress(const char* ipAddress){
 
             ofLogNotice("OSC") << "OF LOCAL IP ADDRESS:" + localIP + " on port:" << ofToString(PORT);
 
-            char broadcast[16];
-            std::vector<std::string> result;
-
-            result = ofSplitString(std::string(ipAddress),".");
-
-            const char* last = result[3].c_str();
-
-            if (last[0] == '1'){
-
-                if (server.setup(PORT)) {
-                    isServer = true;
-                    ofLogNotice("TCP") << "IS SERVER AT:" + localIP + " on port:" << ofToString(PORT);
-                    mainMessage = "";  // "Agent"
-
-                    gameState = GameStateReadyRoom;                                                                            // gameState  :  connected
-                    stepInterval = 1000;
-                    step = 0;
-                    stepTimer = ofGetElapsedTimeMillis();
-                }
-                else {
-                    server.close();
-                    ofLogNotice("TCP") << "SERVER FAILED !!";
-                    mainMessage = "RESTART";
-
-                    gameState = GameStateWaitingForSignIn;                                                                            // gameState  :  disconnected
-
-                    ofLogNotice("+++ GameState updated:") << "Waiting For Sign In  setIPAddress1";
-
-                }
-            }
-
             // open an outgoing connection to HOST:PORT
 
             // DO CLIENT
 
-            if (!isServer){
-
-                int index = 0;
-                for (int i = 0; i < 3; i++){
-                    for (int j = 0; j < result[i].length(); j++){
-                        broadcast[index] = ipAddress[index];
-                        index++;
-                    }
-
-                    broadcast[index] = '.';
-                    index++;
-                }
-
-                char s[4] = {'1','\0'};
-
-                for (int i = 0; i < 2; i++){
-                    broadcast[index] = s[i];
-                    index++;
-                }
-
-                serverIP = std::string(broadcast);
-
-                if (client.setup (serverIP, PORT)){
-                    isClient = true;
-                    ofLogNotice("TCP") << "connect to server at " + serverIP + " port: " << ofToString(PORT) << "\n";
-                    mainMessage = "";  // "Agent"
-
-                    gameState = GameStateReadyRoom;                                                                            // gameState  :  connected
-                    ofLogNotice("+++ GameState updated:") << "Ready Room, setIPAddress()";
-                    stepInterval = 1000;
-                    step = 0;
-                    stepTimer = ofGetElapsedTimeMillis();
-
-                }
-            }
         }
     }
 	else {
@@ -1088,9 +1303,148 @@ void agentController::setIpAddress(const char* ipAddress){
 }
 
 
+string agentController::getCodeFromInt(int num){
+
+    string codeString = paddedString(num);
+
+    char code[8];
+
+    code[1] = ' ';
+    code[2] = ' ';
+    code[4] = ' ';
+    code[5] = ' ';
+
+    const char* last = codeString.c_str();
+    code[0] = last[0];
+    code[3] = last[1];
+    code[6] = last[2];
+    code[7] = '\0';
+
+    return string(code);
+
+}
+
+
+
+string agentController::getCodeFromIp(){
+
+    if (localIP.compare("error") == 0 || !localIP.length()) return "error";
+
+    std::vector<std::string> result;
+
+    result = ofSplitString(localIP,".");
+
+
+    if (result[3].length() < 3){
+
+        char code[8];
+
+        code[1] = ' ';
+        code[2] = ' ';
+        code[4] = ' ';
+        code[5] = ' ';
+
+        const char* last = result[3].c_str();
+        code[0] = '0';
+        code[3] = last[0];
+        code[6] = last[1];
+        code[7] = '\0';
+
+        return string(code);
+
+    }
+
+    else {
+        char code[8];
+
+        code[1] = ' ';
+        code[2] = ' ';
+        code[4] = ' ';
+        code[5] = ' ';
+
+        const char* last = result[3].c_str();
+        code[0] = last[0];
+        code[3] = last[1];
+        code[6] = last[2];
+        code[7] = '\0';
+
+        return string(code);
+    }
+
+
+
+}
+
+int agentController::serverConnect(){
+
+    if (localIP.compare("error") == 0 || !localIP.length()) {
+        ofLogNotice("TCP") << "SERVER FAILED ! NO IP";
+        return -1;
+    }
+
+    if (server.setup(PORT)) {
+        ofLogNotice("TCP") << "IS SERVER AT:" + localIP + " on port:" << ofToString(PORT);
+        return 1;
+    }
+
+    else {
+        server.close();
+        ofLogNotice("TCP") << "SERVER FAILED !!";
+        ofLogNotice("+++ GameState updated:") << "Waiting For Sign In  setIPAddress1";
+        return 0;
+    }
+
+}
+
+int agentController::clientConnect(){
+
+    if (localIP.compare("error") == 0 || !localIP.length()) {
+        ofLogNotice("TCP") << "CLIENT FAILED ! NO IP";
+        return -1;
+    }
+
+    char serverString[16];
+    std::vector<std::string> result;
+
+    result = ofSplitString(localIP,".");
+
+        int index = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < result[i].length(); j++){
+                serverString[index] = localIP.c_str()[index];
+                index++;
+            }
+
+            serverString[index] = '.';
+            index++;
+        }
+
+        serverString[index] = '\0';
+
+        serverIP = std::string(serverString);
+
+        serverIP += ofToString(loginCode);
+
+
+        ofLogNotice("+++ Connecting to server:") << serverIP;
+
+
+        if (client.setup (serverIP, PORT)){
+            ofLogNotice("TCP") << "connect to server at " + serverIP + " port: " << ofToString(PORT) << "\n";
+            mainMessage = "";  // "Agent"
+
+            return 1;
+        }
+
+        return 0;
+
+
+
+}
+
 
 void agentController::pause(){
-
+    exit();
 }
 
 void agentController::resume(){
@@ -1124,13 +1478,13 @@ void agentController::exit() {
 	if (isServer){
         ofLogNotice("TCP") << "Shutting down Server";
         server.close();
-        gameState = GameStateWaitingForSignIn;                                                                            // gameState  :  disconnected
+        gameState = GameStateLogin;                                                                            // gameState  :  disconnected
         ofLogNotice("+++ GameState updated:") << "Waiting For Sign In, exit()";
 	}
 	if (isClient){
 		ofLogNotice("TCP") << "Shutting down Client";
 		client.close();
-        gameState = GameStateWaitingForSignIn;                                                                            // gameState  :  disconnected
+        gameState = GameStateLogin;                                                                            // gameState  :  disconnected
         ofLogNotice("+++ GameState updated:") << "Waiting For Sign In, exit()";
 	}
 }

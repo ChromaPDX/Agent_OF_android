@@ -1,6 +1,6 @@
-set solib-search-path /Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/obj/local/armeabi:/Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/libs/armeabi
+set solib-search-path /Users/robby/Code/of_v0.8.0_mobile/apps/DoubleAgent/Agent_OF_android/obj/local/armeabi:/Users/robby/Code/of_v0.8.0_mobile/apps/DoubleAgent/Agent_OF_android/libs/armeabi
 directory /Users/robby/Code/ANDROID/android-ndk-r8d/platforms/android-14/arch-arm/usr/include
-directory /Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/src
+directory /Users/robby/Code/of_v0.8.0_mobile/apps/DoubleAgent/Agent_OF_android/src
 directory /Users/robby/Code/ANDROID/android-ndk-r8d/sources/cxx-stl/system
-directory /Users/robby/Code/ANDROID/of_v0.8.0_android_release/apps/myApps/Agent_OF_android/libs/armeabi
+directory /Users/robby/Code/of_v0.8.0_mobile/apps/DoubleAgent/Agent_OF_android/libs/armeabi
 

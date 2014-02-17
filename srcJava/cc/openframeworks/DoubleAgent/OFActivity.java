@@ -240,8 +240,8 @@ private Sensor compassSensor;
 	
     @Override
     protected void onPause() {
+    	ofApp.pause();
         super.onPause();
-        ofApp.pause();
         sensorManager.unregisterListener(this);
     }
 

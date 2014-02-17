@@ -23,13 +23,24 @@
 
 typedef enum
 {
-	GameStateWaitingForSignIn,
+	GameStateLogin,
     GameStateReadyRoom,
 	GameStatePlaying,
     GameStateDeciding,
 	GameStateGameOver
 }
 GameState;
+
+typedef enum
+{
+    LoginStateChoose,
+    LoginStateClient,
+    LoginStateServer,
+    LoginStateConnecting,
+    LoginStateFailed,
+    LoginStateNoIP
+}
+LoginStateState;
 
 typedef enum
 {
@@ -120,7 +131,7 @@ private:
     string mainMessage;   // the action command, used for display and orientation within the game loop
     string placeString[NUM_PLACES] = {"DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT","DATA SENT"};//{"1st","2nd","3rd","4th","5th","6th","7th","8th"};
     string actionString[NUM_GESTURES] = {"NOTHING","JUMP","TOUCH SCREEN","SHAKE PHONE","SPIN","HIGH FIVE\nNEIGHBOR","POINT AT\nAN AGENT","FREEZE","CROUCH","STAND ON\nONE LEG","TOUCH YOUR\nNOSE","RAISE\nA HAND","RUN IN PLACE"};
-    string connectedAgentsStrings[NUM_PLACES] = {"", ".", ". .", ". . .", ". . . .", ". . . . .", ". . . . . .", ". . . . . . ."};
+    string connectedAgentsStrings[NUM_PLACES+1] = {"", ".", ". .", ". . .", ". . . .", ". . . . .", ". . . . . .", ". . . . . . .", ". . . . . . . ."};
     char spymess[5];  // scrambled text
     bool actionHasOccurred(string message);     // prevent repeating actions per round
     string previousActions[NUM_TURNS];  // prevent repeating actions per round, history of moves. gets cleared every round start
@@ -136,14 +147,30 @@ private:
     int pickerAccordingToServer;
     int spyAccordingToServer;
 
+
     void startGame();        // initiated by server with "startGame", used by clients and servers
     void execute(string gesture);   // the moment a turn begins, timers start
     void countScores();       // server only
     void pickedAgent(int agent);
 
+    // LOG IN DATA
+
+    int clientConnect();
+    int serverConnect();
+
+    string getCodeFromIp();
+    string getCodeFromInt(int num);
+
+    void drawLoginScreen();
+    int loginState = 0;
+    int loginCode = 0;
+    int hostIp;
+    float screenScale;
+
     // OF / UI / UX
     int mouseX, mouseY;
     int centerX, centerY;  // screen Coords
+    int width, height;
     char mouseButtonState[128];
     ofTrueTypeFont font;
     ofTrueTypeFont fontSmall;
@@ -154,6 +181,9 @@ private:
     ofImage reticleInside;
     ofImage fingerPrint;
     ofImage insideCircle;
+
+    ofImage increment;
+    ofImage decrement;
     string lowerTextLine1, lowerTextLine2, lowerTextLine3;
 
     void drawAnimatedSphereBackground();
