@@ -26,7 +26,8 @@ void agentController::setup() {
     fontMedium.setLetterSpacing(.9);
 
     //    elapsed = ofGetElapsedTimeMillis();
-    gameState = GameStateLogin;                                                                                  // gameState  :  waiting
+    gameState = GameStateLogin;
+    loginState = LoginStateChoose;
     turnState = TurnStateNotActive;                                                                                         // turnState  :  not active
     currentTurn = 0;
     ofLogNotice("+++ GameState updated:") << "Waiting For Sign In, setup()";
@@ -95,6 +96,15 @@ void agentController::updateTCP() {
 	    }
 	}
     else if (isClient){
+
+    	if (!client.isConnected()){
+    		client.close();
+    		isClient = false;
+    		connectedAgents = 0;
+    		gameState = GameStateLogin;
+    		loginState = LoginStateServerQuit;
+    		return;
+    	}
 
         string str = client.receive();
 
@@ -174,12 +184,27 @@ void agentController::updateTCP() {
     }
 }
 
+void agentController::stopServer(){
+
+	if (isServer){
+		    for(int i = 0; i < server.getLastID(); i++) // getLastID is UID of all clients
+		    {
+	            if( server.isClientConnected(i) ) {
+	            	server.disconnectClient(i);
+	            }
+		    }
+
+		    server.close();
+		    isServer = false;
+	}
+
+}
 void agentController::updateSlowTCP(){
     if(oneSecond != ofGetSeconds()){   // only runs once/second
         oneSecond = ofGetSeconds();
 
         if(isServer){  //  send number of clients
-            connectedAgents = server.getNumClients() + 1;
+            //connectedAgents = server.getNumClients() + 1;
             sendMessage(ofToString(connectedAgents));
         }
         else if (isClient){
@@ -590,7 +615,8 @@ void agentController::drawLoginScreen() {
     string backString = "< BACK";
     string thirdString;
 
-    ofSetColor(255,255,255);
+    ofSetColor(255,255,255,255);
+    ofEnableAlphaBlending();
 
     switch (loginState) {
         case LoginStateChoose:
@@ -658,6 +684,18 @@ void agentController::drawLoginScreen() {
 
             break;
 
+        case LoginStateServerQuit:
+
+            hostString = "BACK";
+            clientString = "HOST STOPPED";
+            thirdString = "THE GAME";
+
+            font.drawString(hostString,ofGetWidth()/2 - font.stringWidth(hostString)/2.,ofGetHeight()*.15 - font.stringHeight(hostString)/2.);
+            font.drawString(clientString,ofGetWidth()/2 - font.stringWidth(clientString)/2.,ofGetHeight()*.5 - font.stringHeight(clientString)/2.);
+            font.drawString(thirdString,ofGetWidth()/2 - font.stringWidth(thirdString)/2.,ofGetHeight()*.6 - font.stringHeight(thirdString)/2.);
+
+            break;
+
         case LoginStateNoIP:
 
 
@@ -675,6 +713,7 @@ void agentController::drawLoginScreen() {
         default:
             break;
     }
+    ofDisableAlphaBlending();
 
 }
 
@@ -1203,7 +1242,7 @@ void agentController::touchBegan(int x, int y, int id){
 
                     break;
 
-                case LoginStateFailed: case LoginStateNoIP:
+                case LoginStateFailed: case LoginStateNoIP: case LoginStateServerQuit:
 
                     loginState = LoginStateChoose;
 
@@ -1218,20 +1257,18 @@ void agentController::touchBegan(int x, int y, int id){
 
         case GameStateReadyRoom:
 
-            if (isServer) {
-
                 if (y < height * .2) {
                     gameState = GameStateLogin;
                     loginState = LoginStateChoose;
-                    server.close();
-                    isServer = 0;
+                    if (isServer){stopServer(); isServer = 0;}
+                    if (isClient){client.close(); isClient = 0;}
                 }
-                else if (connectedAgents > 1){
+                else if (isServer && connectedAgents > 1){
                     sendMessage("startGame");
                     //sleep(250);
                     startGame();
                 }
-            }
+
 
             break;
         case GameStatePlaying:
@@ -1449,6 +1486,8 @@ void agentController::pause(){
 
 void agentController::resume(){
 
+	//setup();
+
 	if (isServer){
 		if (server.setup(PORT)){
 			ofLogNotice("TCP") << "Successfully resumed Server";
@@ -1477,7 +1516,7 @@ void agentController::resume(){
 void agentController::exit() {
 	if (isServer){
         ofLogNotice("TCP") << "Shutting down Server";
-        server.close();
+        stopServer();
         gameState = GameStateLogin;                                                                            // gameState  :  disconnected
         ofLogNotice("+++ GameState updated:") << "Waiting For Sign In, exit()";
 	}

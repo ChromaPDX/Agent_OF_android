@@ -240,17 +240,18 @@ private Sensor compassSensor;
 	
     @Override
     protected void onPause() {
-    	ofApp.pause();
+    	sensorManager.unregisterListener(this);
         super.onPause();
-        sensorManager.unregisterListener(this);
+    	ofApp.pause();
+    	System.exit(0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         ofApp.resume();
         
-
   		List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
         if(sensors.size() > 0)
         {

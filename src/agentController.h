@@ -38,7 +38,8 @@ typedef enum
     LoginStateServer,
     LoginStateConnecting,
     LoginStateFailed,
-    LoginStateNoIP
+    LoginStateNoIP,
+    LoginStateServerQuit
 }
 LoginStateState;
 
@@ -157,6 +158,8 @@ private:
 
     int clientConnect();
     int serverConnect();
+
+    void stopServer();
 
     string getCodeFromIp();
     string getCodeFromInt(int num);
