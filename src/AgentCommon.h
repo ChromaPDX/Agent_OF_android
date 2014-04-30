@@ -18,6 +18,7 @@
 #define ACTION_TIME 3000  // 3 seconds to execute action
 #define SENSOR_DATA_ARRAY_SIZE 12
 #define ERROR_MESSAGE_DURATION 2000
+#define MIN_NUMBER_OF_PLAYERS 3
 
 typedef enum
 {

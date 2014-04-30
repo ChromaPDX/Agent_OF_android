@@ -758,8 +758,7 @@ void agentController::touchEnded(int x, int y, int id) {
         }
         // start game
         if (isServer && x > centerX && y > height * .85){
-#warning change connectedAgents > 2
-            if(connectedAgents > 1){
+            if(connectedAgents > MIN_NUMBER_OF_PLAYERS){
                 generateNewSpyRoles();
                 sendMessage("stateStartGame");
                 updateStateWithTransition(StateStartGame, TRANSITION_BEGIN_GAME);
